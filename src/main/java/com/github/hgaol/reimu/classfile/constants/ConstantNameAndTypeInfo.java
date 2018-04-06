@@ -1,12 +1,18 @@
 package com.github.hgaol.reimu.classfile.constants;
 
-import com.github.hgaol.reimu.classfile.BytesReader;
-import com.github.hgaol.reimu.classfile.ConstantInfo;
+import com.github.hgaol.reimu.classfile.ConstantPool;
 
-public class ConstantNameAndTypeInfo implements ConstantInfo {
+public class ConstantNameAndTypeInfo extends ConstantMemberrefInfo {
+
+  public ConstantNameAndTypeInfo(ConstantPool cp) {
+    super(cp);
+  }
 
   @Override
-  public ConstantInfo readInfo(BytesReader reader) {
-    return null;
+  public String toString() {
+    return "ConstantNameAndTypeInfo{" +
+        "classIndex=" + classIndex +
+        ", nameAndTypeIndex=" + nameAndTypeIndex +
+        '}';
   }
 }

@@ -1,19 +1,24 @@
 package com.github.hgaol.reimu.classfile.constants;
 
 import com.github.hgaol.reimu.classfile.BytesReader;
-import com.github.hgaol.reimu.classfile.ConstantInfo;
 
 public class ConstantIntegerInfo implements ConstantInfo {
 
-  private int val;
+  private int value;
 
   @Override
-  public ConstantInfo readInfo(BytesReader reader) {
-    return null;
+  public void readInfo(BytesReader reader) {
+    value = reader.readInt();
   }
 
   public int getVal() {
-    return val;
+    return value;
   }
 
+  @Override
+  public String toString() {
+    return "ConstantIntegerInfo{" +
+        "value=" + value +
+        '}';
+  }
 }

@@ -8,6 +8,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import static com.github.hgaol.reimu.util.EchoUtil.echoln;
+
 /**
  * Hello world!
  */
@@ -16,6 +18,7 @@ public class ClassParser {
     Path path = Paths.get(args[0]);
     byte[] data = Files.readAllBytes(path);
     ClassFile cf = ClassFileUtil.parse(data);
+    echoln(cf);
   }
 
 }

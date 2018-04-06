@@ -1,10 +1,9 @@
 package com.github.hgaol.reimu.classfile.attribute;
 
-import com.github.hgaol.reimu.classfile.BytesReader;
+class DeprecatedAttribute extends MarkerAttribute {
 
-class DeprecatedAttribute implements AttributeInfo{
-
-  public void readInfo(BytesReader reader) {
-
+  @Override
+  public String toString() {
+    return "DeprecatedAttribute{}";
   }
 }

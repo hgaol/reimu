@@ -1,12 +1,25 @@
 package com.github.hgaol.reimu.classfile.constants;
 
 import com.github.hgaol.reimu.classfile.BytesReader;
-import com.github.hgaol.reimu.classfile.ConstantInfo;
 
 public class ConstantUtf8Info implements ConstantInfo {
 
+  private String value;
+
+  public String getValue() {
+    return value;
+  }
+
   @Override
-  public ConstantInfo readInfo(BytesReader reader) {
-    return null;
+  public void readInfo(BytesReader reader) {
+    int count = reader.readUnsignedShort();
+    value = new String(reader.readBytes(count));
+  }
+
+  @Override
+  public String toString() {
+    return "ConstantUtf8Info{" +
+        "value='" + value + '\'' +
+        '}';
   }
 }

@@ -4,7 +4,16 @@ import com.github.hgaol.reimu.classfile.BytesReader;
 
 class ConstantValueAttribute implements AttributeInfo{
 
-  public void readInfo(BytesReader reader) {
+  private int constantValueIndex;
 
+  public void readInfo(BytesReader reader) {
+    this.constantValueIndex = reader.readUnsignedShort();
+  }
+
+  @Override
+  public String toString() {
+    return "ConstantValueAttribute{" +
+        "constantValueIndex=" + constantValueIndex +
+        '}';
   }
 }

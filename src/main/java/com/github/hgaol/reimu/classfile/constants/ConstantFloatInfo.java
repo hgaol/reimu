@@ -1,12 +1,20 @@
 package com.github.hgaol.reimu.classfile.constants;
 
 import com.github.hgaol.reimu.classfile.BytesReader;
-import com.github.hgaol.reimu.classfile.ConstantInfo;
 
 public class ConstantFloatInfo implements ConstantInfo {
 
+  private float value;
+
   @Override
-  public ConstantInfo readInfo(BytesReader reader) {
-    return null;
+  public void readInfo(BytesReader reader) {
+    value = reader.readFloat();
+  }
+
+  @Override
+  public String toString() {
+    return "ConstantFloatInfo{" +
+        "value=" + value +
+        '}';
   }
 }

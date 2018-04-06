@@ -1,12 +1,20 @@
 package com.github.hgaol.reimu.classfile.constants;
 
 import com.github.hgaol.reimu.classfile.BytesReader;
-import com.github.hgaol.reimu.classfile.ConstantInfo;
 
 public class ConstantMethodTypeInfo implements ConstantInfo {
 
+  private int descriptorIndex;
+
   @Override
-  public ConstantInfo readInfo(BytesReader reader) {
-    return null;
+  public void readInfo(BytesReader reader) {
+    descriptorIndex = reader.readUnsignedShort();
+  }
+
+  @Override
+  public String toString() {
+    return "ConstantMethodTypeInfo{" +
+        "descriptorIndex=" + descriptorIndex +
+        '}';
   }
 }

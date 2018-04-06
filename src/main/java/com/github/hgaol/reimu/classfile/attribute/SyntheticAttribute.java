@@ -1,10 +1,8 @@
 package com.github.hgaol.reimu.classfile.attribute;
 
-import com.github.hgaol.reimu.classfile.BytesReader;
-
-class SyntheticAttribute implements AttributeInfo{
-
-  public void readInfo(BytesReader reader) {
-
+class SyntheticAttribute extends MarkerAttribute {
+  @Override
+  public String toString() {
+    return "SyntheticAttribute{}";
   }
 }

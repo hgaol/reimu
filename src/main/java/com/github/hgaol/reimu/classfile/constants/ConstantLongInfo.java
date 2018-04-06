@@ -1,12 +1,25 @@
 package com.github.hgaol.reimu.classfile.constants;
 
 import com.github.hgaol.reimu.classfile.BytesReader;
-import com.github.hgaol.reimu.classfile.ConstantInfo;
 
 public class ConstantLongInfo implements ConstantInfo {
 
+  private long value;
+
   @Override
-  public ConstantInfo readInfo(BytesReader reader) {
-    return null;
+  public void readInfo(BytesReader reader) {
+    value = reader.readLong();
+  }
+
+  public long getValue() {
+    return value;
+  }
+
+  @Override
+  public String toString() {
+    return "ConstantLongInfo{" +
+//        "hex: " + Long.toHexString(value) +  ", value = " + value +
+        "value = " + value +
+        '}';
   }
 }
