@@ -3,21 +3,6 @@ package com.github.hgaol.reimu.classfile;
 import com.github.hgaol.reimu.classfile.constants.*;
 
 import static com.github.hgaol.reimu.classfile.constants.ConstantPoolType.*;
-import static com.github.hgaol.reimu.classfile.constants.ConstantPoolType.CONSTANT_CLASS;
-import static com.github.hgaol.reimu.classfile.constants.ConstantPoolType.CONSTANT_DOUBLE;
-import static com.github.hgaol.reimu.classfile.constants.ConstantPoolType.CONSTANT_FIELDREF;
-import static com.github.hgaol.reimu.classfile.constants.ConstantPoolType.CONSTANT_FLOAT;
-import static com.github.hgaol.reimu.classfile.constants.ConstantPoolType.CONSTANT_INTEGER;
-import static com.github.hgaol.reimu.classfile.constants.ConstantPoolType.CONSTANT_INTERFACE_METHODREF;
-import static com.github.hgaol.reimu.classfile.constants.ConstantPoolType.CONSTANT_INVOKE_DYNAMIC;
-import static com.github.hgaol.reimu.classfile.constants.ConstantPoolType.CONSTANT_LONG;
-import static com.github.hgaol.reimu.classfile.constants.ConstantPoolType.CONSTANT_METHODREF;
-import static com.github.hgaol.reimu.classfile.constants.ConstantPoolType.CONSTANT_METHOD_HANDLE;
-import static com.github.hgaol.reimu.classfile.constants.ConstantPoolType.CONSTANT_METHOD_TYPE;
-import static com.github.hgaol.reimu.classfile.constants.ConstantPoolType.CONSTANT_NAMEANDTYPE;
-import static com.github.hgaol.reimu.classfile.constants.ConstantPoolType.CONSTANT_STRING;
-import static com.github.hgaol.reimu.classfile.constants.ConstantPoolType.CONSTANT_UTF8;
-import static com.github.hgaol.reimu.util.EchoUtil.*;
 
 /**
  * @author Gao Han

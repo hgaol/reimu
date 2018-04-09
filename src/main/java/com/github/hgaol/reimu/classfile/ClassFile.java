@@ -5,7 +5,7 @@ import com.github.hgaol.reimu.classfile.attribute.AttributeInfoUtil;
 
 import java.util.Arrays;
 
-import static com.github.hgaol.reimu.util.EchoUtil.*;
+import static com.github.hgaol.reimu.util.EchoUtils.*;
 
 /**
  * @author Gao Han
