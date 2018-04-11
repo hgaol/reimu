@@ -5,17 +5,16 @@ import com.github.hgaol.reimu.classfile.ClassFileUtil;
 import com.github.hgaol.reimu.classpath.ClassPath;
 import com.github.hgaol.reimu.cmd.CmdInfo;
 
-import java.io.IOException;
 import java.util.Arrays;
 
 import static com.github.hgaol.reimu.util.EchoUtils.echof;
 import static com.github.hgaol.reimu.util.EchoUtils.echoln;
 
 /**
- * Hello world!
+ * Poor java virtual machine
  */
 public class ClassParser {
-  public static void main(String[] args) throws IOException {
+  public static void main(String[] args) {
     CmdInfo cmd = new CmdInfo(args);
     if (cmd.version) {
       cmd.printVersion();
@@ -24,10 +23,6 @@ public class ClassParser {
     } else {
       startJVM(cmd);
     }
-//    Path path = Paths.get(args[0]);
-//    byte[] data = Files.readAllBytes(path);
-//    ClassFile cf = ClassFileUtil.parse(data);
-//    echoln(cf);
   }
 
   public static void startJVM(CmdInfo cmd) {
