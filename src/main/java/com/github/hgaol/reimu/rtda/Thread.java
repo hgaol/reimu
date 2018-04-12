@@ -25,6 +25,10 @@ public class Thread {
     stack.push(frame);
   }
 
+  public Frame newFrame(int maxLocals, int maxStack) {
+    return new Frame(this, maxLocals, maxStack);
+  }
+
   public Frame popFrame() {
     return stack.pop();
   }

@@ -20,7 +20,7 @@ public class IfCmp {
     }
   }
 
-  public static class IfIcmpNe extends BranchInstruction {
+  public static class IfIcmpNE extends BranchInstruction {
     @Override
     public void execute(Frame frame) {
       if (icmp(frame) != 0) {
@@ -87,7 +87,7 @@ public class IfCmp {
     }
   }
 
-  public static class IfAcmpNe extends BranchInstruction {
+  public static class IfAcmpNE extends BranchInstruction {
     @Override
     public void execute(Frame frame) {
       if (!acmp(frame)) {

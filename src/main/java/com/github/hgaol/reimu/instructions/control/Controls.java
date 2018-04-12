@@ -2,6 +2,7 @@ package com.github.hgaol.reimu.instructions.control;
 
 import com.github.hgaol.reimu.instructions.base.BranchInstruction;
 import com.github.hgaol.reimu.instructions.base.BytecodeReader;
+import com.github.hgaol.reimu.instructions.base.Instruction;
 import com.github.hgaol.reimu.rtda.Frame;
 
 /**
@@ -44,37 +45,36 @@ public class Controls {
       }
       branch(frame, defaultOffset);
     }
+  }
 
-    /**
-     * 对应顺序的
-     */
-    public static class TableSwitch extends BranchInstruction {
-      private int defaultOffset;
-      private int low;
-      private int high;
-      private int[] jumpOffsets;
+  /**
+   * 对应顺序的
+   */
+  public static class TableSwitch extends BranchInstruction {
+    private int defaultOffset;
+    private int low;
+    private int high;
+    private int[] jumpOffsets;
 
-      @Override
-      public void fetchOperands(BytecodeReader reader) {
-        reader.skipPadding();
-        defaultOffset = reader.getInt();
-        low = reader.getInt();
-        high = reader.getInt();
-        jumpOffsets = reader.getInts(high - low + 1);
-      }
-
-      @Override
-      public void execute(Frame frame) {
-        int index = frame.getOperandStack().popInt();
-        int offset = defaultOffset;
-        if (low <= index && index <= high) {
-          offset = jumpOffsets[index - low];
-        }
-
-        branch(frame, offset);
-      }
+    @Override
+    public void fetchOperands(BytecodeReader reader) {
+      reader.skipPadding();
+      defaultOffset = reader.getInt();
+      low = reader.getInt();
+      high = reader.getInt();
+      jumpOffsets = reader.getInts(high - low + 1);
     }
 
+    @Override
+    public void execute(Frame frame) {
+      int index = frame.getOperandStack().popInt();
+      int offset = defaultOffset;
+      if (low <= index && index <= high) {
+        offset = jumpOffsets[index - low];
+      }
+
+      branch(frame, offset);
+    }
   }
 
 

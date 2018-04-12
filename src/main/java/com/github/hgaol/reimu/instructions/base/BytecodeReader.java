@@ -11,11 +11,13 @@ public class BytecodeReader {
   private int pc;
   private ByteBuffer code;
 
+  public BytecodeReader() {}
+
   public BytecodeReader(byte[] code) {
     this.code = ByteBuffer.wrap(code);
   }
 
-  public void reset(byte[] code, int pc, ByteOrder order) {
+  public void reset(byte[] code, int pc) {
     this.code = ByteBuffer.wrap(code);
     this.pc = pc;
   }
@@ -32,6 +34,11 @@ public class BytecodeReader {
     byte data = code.get(pc);
     pc++;
     return data;
+  }
+
+  public int getUnsignedByte() {
+    byte data = getByte();
+    return Byte.toUnsignedInt(data);
   }
 
   public char getChar() {

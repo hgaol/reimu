@@ -9,7 +9,7 @@ public class Frame {
   private LocalVars localVars;
   private OperandStack operandStack;
   private Thread thread;
-  private int pc;
+  private int nextPc;
 
   public Frame(Thread thread, int maxLocalVars, int maxOperandStack) {
     this.thread = thread;
@@ -48,12 +48,12 @@ public class Frame {
     return thread;
   }
 
-  public int getPc() {
-    return pc;
+  public int getNextPc() {
+    return nextPc;
   }
 
   public Frame setNextPc(int pc) {
-    this.pc = pc;
+    this.nextPc = pc;
     return this;
   }
 }

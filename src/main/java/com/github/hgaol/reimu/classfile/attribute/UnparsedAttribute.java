@@ -4,7 +4,7 @@ import com.github.hgaol.reimu.classfile.BytesReader;
 
 import java.util.Arrays;
 
-class UnparsedAttribute implements AttributeInfo {
+public class UnparsedAttribute implements AttributeInfo {
 
   private String attrName;
   private long attrLen;
@@ -16,6 +16,7 @@ class UnparsedAttribute implements AttributeInfo {
     this.data = data;
   }
 
+  @Override
   public void readInfo(BytesReader reader) {
     this.data = reader.readBytes((int) this.attrLen);
   }

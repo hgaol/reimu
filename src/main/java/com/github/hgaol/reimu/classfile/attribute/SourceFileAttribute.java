@@ -6,7 +6,7 @@ import com.github.hgaol.reimu.classfile.ConstantPool;
 /**
  * sourceFileIndex指向常量值索引，表示该类对应的文件名
  */
-class SourceFileAttribute implements AttributeInfo{
+public class SourceFileAttribute implements AttributeInfo{
 
   private ConstantPool cp;
   private int sourceFileIndex;
@@ -15,6 +15,7 @@ class SourceFileAttribute implements AttributeInfo{
     this.cp = cp;
   }
 
+  @Override
   public void readInfo(BytesReader reader) {
     this.sourceFileIndex = reader.readUnsignedShort();
   }

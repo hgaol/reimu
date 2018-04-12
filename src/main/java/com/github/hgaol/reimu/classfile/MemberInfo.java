@@ -2,6 +2,7 @@ package com.github.hgaol.reimu.classfile;
 
 import com.github.hgaol.reimu.classfile.attribute.AttributeInfo;
 import com.github.hgaol.reimu.classfile.attribute.AttributeInfoUtil;
+import com.github.hgaol.reimu.classfile.attribute.CodeAttribute;
 
 import java.util.Arrays;
 
@@ -13,11 +14,11 @@ import java.util.Arrays;
  */
 public class MemberInfo {
 
-  private ConstantPool cp;
-  private int accessFlags;
-  private int nameIndex;
-  private int descriptorIndex;
-  private AttributeInfo[] attributes;
+  public ConstantPool cp;
+  public int accessFlags;
+  public int nameIndex;
+  public int descriptorIndex;
+  public AttributeInfo[] attributes;
 
   public MemberInfo(ConstantPool cp, int accessFlags, int nameIndex, int descriptorIndex, AttributeInfo[] attributes) {
     this.cp = cp;
@@ -25,6 +26,23 @@ public class MemberInfo {
     this.nameIndex = nameIndex;
     this.descriptorIndex = descriptorIndex;
     this.attributes = attributes;
+  }
+
+  public CodeAttribute getCodeAttribute() {
+    for (AttributeInfo attrInfo : attributes) {
+      if (attrInfo instanceof CodeAttribute) {
+        return (CodeAttribute) attrInfo;
+      }
+    }
+    return null;
+  }
+
+  public String getName() {
+    return this.cp.getUtf8(this.nameIndex);
+  }
+
+  public String getDescriptor() {
+    return this.cp.getUtf8(this.descriptorIndex);
   }
 
   public static MemberInfo readMemberInfo(BytesReader reader, ConstantPool cp) {

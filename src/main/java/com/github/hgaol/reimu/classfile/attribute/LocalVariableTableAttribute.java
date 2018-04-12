@@ -4,10 +4,11 @@ import com.github.hgaol.reimu.classfile.BytesReader;
 
 import java.util.Arrays;
 
-class LocalVariableTableAttribute implements AttributeInfo {
+public class LocalVariableTableAttribute implements AttributeInfo {
 
   private LocalVariableInfo[] localVariableTable;
 
+  @Override
   public void readInfo(BytesReader reader) {
     int count = reader.readUnsignedShort();
     localVariableTable = new LocalVariableInfo[count];

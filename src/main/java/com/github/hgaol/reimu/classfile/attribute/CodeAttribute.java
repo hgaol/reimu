@@ -5,20 +5,21 @@ import com.github.hgaol.reimu.classfile.ConstantPool;
 
 import java.util.Arrays;
 
-class CodeAttribute implements AttributeInfo {
+public class CodeAttribute implements AttributeInfo {
 
-  private ConstantPool cp;
-  private int maxStack;
-  private int maxLocals;
+  public ConstantPool cp;
+  public int maxStack;
+  public int maxLocals;
   // TODO
-  private byte[] code;
-  private ExceptionTableEntry[] exceptionTables;
-  private AttributeInfo[] attributes;
+  public byte[] code;
+  public ExceptionTableEntry[] exceptionTables;
+  public AttributeInfo[] attributes;
 
   public CodeAttribute(ConstantPool cp) {
     this.cp = cp;
   }
 
+  @Override
   public void readInfo(BytesReader reader) {
     this.maxStack = reader.readUnsignedShort();
     this.maxLocals = reader.readUnsignedShort();

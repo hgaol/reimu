@@ -4,10 +4,11 @@ import com.github.hgaol.reimu.classfile.BytesReader;
 
 import java.util.Arrays;
 
-class ExceptionAttribute implements AttributeInfo{
+public class ExceptionAttribute implements AttributeInfo{
 
   private int[] exceptionIndexTable;
 
+  @Override
   public void readInfo(BytesReader reader) {
     int count = reader.readUnsignedShort();
     this.exceptionIndexTable = new int[count];

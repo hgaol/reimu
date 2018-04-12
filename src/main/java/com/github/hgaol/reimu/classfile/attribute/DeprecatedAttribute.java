@@ -1,6 +1,6 @@
 package com.github.hgaol.reimu.classfile.attribute;
 
-class DeprecatedAttribute extends MarkerAttribute {
+public class DeprecatedAttribute extends MarkerAttribute {
 
   @Override
   public String toString() {

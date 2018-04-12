@@ -8,7 +8,7 @@ import com.github.hgaol.reimu.rtda.Frame;
  * @date: 2018年04月11日
  */
 public class Ors {
-  public static class IAdd extends NoOperandsInstruction {
+  public static class IOr extends NoOperandsInstruction {
     @Override
     public void execute(Frame frame) {
       int v2 = frame.getOperandStack().popInt();
@@ -17,7 +17,7 @@ public class Ors {
     }
   }
 
-  public static class LAdd extends NoOperandsInstruction {
+  public static class LOr extends NoOperandsInstruction {
     @Override
     public void execute(Frame frame) {
       long v2 = frame.getOperandStack().popLong();

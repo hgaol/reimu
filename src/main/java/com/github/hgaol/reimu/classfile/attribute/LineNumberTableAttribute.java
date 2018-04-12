@@ -4,10 +4,11 @@ import com.github.hgaol.reimu.classfile.BytesReader;
 
 import java.util.Arrays;
 
-class LineNumberTableAttribute implements AttributeInfo {
+public class LineNumberTableAttribute implements AttributeInfo {
 
   private LineNumberInfo[] lineNumberTable;
 
+  @Override
   public void readInfo(BytesReader reader) {
     int count = reader.readUnsignedShort();
     this.lineNumberTable = new LineNumberInfo[count];

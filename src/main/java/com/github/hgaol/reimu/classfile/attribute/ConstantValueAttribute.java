@@ -2,10 +2,11 @@ package com.github.hgaol.reimu.classfile.attribute;
 
 import com.github.hgaol.reimu.classfile.BytesReader;
 
-class ConstantValueAttribute implements AttributeInfo{
+public class ConstantValueAttribute implements AttributeInfo{
 
   private int constantValueIndex;
 
+  @Override
   public void readInfo(BytesReader reader) {
     this.constantValueIndex = reader.readUnsignedShort();
   }
