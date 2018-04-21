@@ -3,7 +3,7 @@ package com.github.hgaol.reimu.instructions.stores;
 import com.github.hgaol.reimu.instructions.base.Index8Instruction;
 import com.github.hgaol.reimu.instructions.base.NoOperandsInstruction;
 import com.github.hgaol.reimu.rtda.Frame;
-import com.github.hgaol.reimu.rtda.ReObject;
+import com.github.hgaol.reimu.rtda.heap.ReObject;
 
 /**
  * @author Gao Han

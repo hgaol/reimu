@@ -3,7 +3,7 @@ package com.github.hgaol.reimu.instructions.comparisons;
 import com.github.hgaol.reimu.instructions.base.BranchInstruction;
 import com.github.hgaol.reimu.rtda.Frame;
 import com.github.hgaol.reimu.rtda.OperandStack;
-import com.github.hgaol.reimu.rtda.ReObject;
+import com.github.hgaol.reimu.rtda.heap.ReObject;
 
 /**
  * @author Gao Han

@@ -7,7 +7,7 @@ package com.github.hgaol.reimu.classpath;
 public interface Entry {
   /**
    * return class byte data
-   * @param classNamme class name, ex: java/lang/Object.class
+   * @param classNamme class name, ex: java/lang/ReObject.class
    * @return class file byte data
    */
   byte[] readClass(String classNamme);

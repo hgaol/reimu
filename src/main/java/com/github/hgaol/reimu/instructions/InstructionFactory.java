@@ -2,10 +2,12 @@ package com.github.hgaol.reimu.instructions;
 
 import com.github.hgaol.reimu.instructions.base.Instruction;
 import com.github.hgaol.reimu.instructions.comparisons.Cmps;
+import com.github.hgaol.reimu.instructions.comparisons.IfCmp;
 import com.github.hgaol.reimu.instructions.comparisons.IfCond;
 import com.github.hgaol.reimu.instructions.constants.Const;
 import com.github.hgaol.reimu.instructions.constants.IPush;
 import com.github.hgaol.reimu.instructions.constants.Nop;
+import com.github.hgaol.reimu.instructions.control.Controls;
 import com.github.hgaol.reimu.instructions.conversions.D2x;
 import com.github.hgaol.reimu.instructions.conversions.F2x;
 import com.github.hgaol.reimu.instructions.conversions.I2x;
@@ -127,8 +129,8 @@ public class InstructionFactory {
 
   private static Instruction IAnd = new Ands.IAnd();
   private static Instruction LAnd = new Ands.LAnd();
-  private static Instruction IOr = new com.github.hgaol.reimu.instructions.math.Ors.IOr();
-  private static Instruction LOr = new com.github.hgaol.reimu.instructions.math.Ors.LOr();
+  private static Instruction IOr = new Ors.IOr();
+  private static Instruction LOr = new Ors.LOr();
   private static Instruction IXor = new Xors.IXor();
   private static Instruction LXor = new Xors.LXor();
 
@@ -478,31 +480,31 @@ public class InstructionFactory {
       case 0x9e:
         return new IfCond.Ifle();
       case 0x9f:
-        return new com.github.hgaol.reimu.instructions.comparisons.IfCmp.IfIcmpEQ();
+        return new IfCmp.IfIcmpEQ();
       case 0xa0:
-        return new com.github.hgaol.reimu.instructions.comparisons.IfCmp.IfIcmpNE();
+        return new IfCmp.IfIcmpNE();
       case 0xa1:
-        return new com.github.hgaol.reimu.instructions.comparisons.IfCmp.IfIcmpLT();
+        return new IfCmp.IfIcmpLT();
       case 0xa2:
-        return new com.github.hgaol.reimu.instructions.comparisons.IfCmp.IfIcmpGE();
+        return new IfCmp.IfIcmpGE();
       case 0xa3:
-        return new com.github.hgaol.reimu.instructions.comparisons.IfCmp.IfIcmpGT();
+        return new IfCmp.IfIcmpGT();
       case 0xa4:
-        return new com.github.hgaol.reimu.instructions.comparisons.IfCmp.IfIcmpLE();
+        return new IfCmp.IfIcmpLE();
       case 0xa5:
-        return new com.github.hgaol.reimu.instructions.comparisons.IfCmp.IfAcmpEQ();
+        return new IfCmp.IfAcmpEQ();
       case 0xa6:
-        return new com.github.hgaol.reimu.instructions.comparisons.IfCmp.IfAcmpNE();
+        return new IfCmp.IfAcmpNE();
       case 0xa7:
-        return new com.github.hgaol.reimu.instructions.control.Controls.Goto();
+        return new Controls.Goto();
       // case 0xa8:
       // 	return &JSR{}
       // case 0xa9:
       // 	return &RET{}
       case 0xaa:
-        return new com.github.hgaol.reimu.instructions.control.Controls.TableSwitch();
+        return new Controls.TableSwitch();
       case 0xab:
-        return new com.github.hgaol.reimu.instructions.control.Controls.LookupSwitch();
+        return new Controls.LookupSwitch();
       // case 0xac:
       // 	return ireturn
       // case 0xad:

@@ -11,7 +11,7 @@ public class ConstantIntegerInfo implements ConstantInfo {
     value = reader.readInt();
   }
 
-  public int getVal() {
+  public int getValue() {
     return value;
   }
 

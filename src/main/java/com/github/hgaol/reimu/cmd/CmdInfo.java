@@ -1,11 +1,11 @@
 package com.github.hgaol.reimu.cmd;
 
+import com.github.hgaol.reimu.util.EchoUtils;
 import org.apache.commons.cli.*;
 
 import java.util.Arrays;
 
 import static com.github.hgaol.reimu.util.EchoUtils.*;
-import static com.github.hgaol.reimu.util.EchoUtils.echoln;
 
 /**
  * @author Gao Han
@@ -71,7 +71,7 @@ public class CmdInfo {
   }
 
   public void printVersion() {
-    echoln("class-parser version 0.1.0");
+    EchoUtils.echoln("class-parser version 0.1.0");
   }
 
   public void printHelp() {

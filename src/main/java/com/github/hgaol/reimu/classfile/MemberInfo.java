@@ -1,5 +1,6 @@
 package com.github.hgaol.reimu.classfile;
 
+import com.github.hgaol.reimu.classfile.attribute.*;
 import com.github.hgaol.reimu.classfile.attribute.AttributeInfo;
 import com.github.hgaol.reimu.classfile.attribute.AttributeInfoUtil;
 import com.github.hgaol.reimu.classfile.attribute.CodeAttribute;
@@ -32,6 +33,15 @@ public class MemberInfo {
     for (AttributeInfo attrInfo : attributes) {
       if (attrInfo instanceof CodeAttribute) {
         return (CodeAttribute) attrInfo;
+      }
+    }
+    return null;
+  }
+
+  public ConstantValueAttribute getConstantValueAttribute() {
+    for (AttributeInfo attrInfo : attributes) {
+      if (attrInfo instanceof ConstantValueAttribute) {
+        return (ConstantValueAttribute) attrInfo;
       }
     }
     return null;

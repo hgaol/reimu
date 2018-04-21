@@ -9,6 +9,7 @@ import static com.github.hgaol.reimu.classfile.constants.ConstantPoolType.*;
  * @date: 2018年04月04日
  */
 public class ConstantPool {
+
   public ConstantInfo[] constants;
 
   public static ConstantPool readConstantPool(BytesReader reader) {
@@ -29,33 +30,33 @@ public class ConstantPool {
   private static ConstantInfo readConstantInfo(BytesReader reader, ConstantPool cp) {
     short tag = reader.readByte();
     switch (tag) {
-      case CONSTANT_INTEGER:
+      case ConstantPoolType.CONSTANT_INTEGER:
         return new ConstantIntegerInfo();
-      case CONSTANT_FLOAT:
+      case ConstantPoolType.CONSTANT_FLOAT:
         return new ConstantFloatInfo();
-      case CONSTANT_LONG:
+      case ConstantPoolType.CONSTANT_LONG:
         return new ConstantLongInfo();
-      case CONSTANT_DOUBLE:
+      case ConstantPoolType.CONSTANT_DOUBLE:
         return new ConstantDoubleInfo();
-      case CONSTANT_UTF8:
+      case ConstantPoolType.CONSTANT_UTF8:
         return new ConstantUtf8Info();
-      case CONSTANT_STRING:
+      case ConstantPoolType.CONSTANT_STRING:
         return new ConstantStringInfo(cp);
-      case CONSTANT_CLASS:
+      case ConstantPoolType.CONSTANT_CLASS:
         return new ConstantClassInfo(cp);
-      case CONSTANT_FIELDREF:
+      case ConstantPoolType.CONSTANT_FIELDREF:
         return new ConstantFieldrefInfo(cp);
-      case CONSTANT_METHODREF:
+      case ConstantPoolType.CONSTANT_METHODREF:
         return new ConstantMethodrefInfo(cp);
-      case CONSTANT_INTERFACE_METHODREF:
+      case ConstantPoolType.CONSTANT_INTERFACE_METHODREF:
         return new ConstantInterfaceMethodrefInfo(cp);
-      case CONSTANT_NAMEANDTYPE:
+      case ConstantPoolType.CONSTANT_NAMEANDTYPE:
         return new ConstantNameAndTypeInfo(cp);
-      case CONSTANT_METHOD_TYPE:
+      case ConstantPoolType.CONSTANT_METHOD_TYPE:
         return new ConstantMethodTypeInfo();
-      case CONSTANT_METHOD_HANDLE:
+      case ConstantPoolType.CONSTANT_METHOD_HANDLE:
         return new ConstantMethodHandleInfo();
-      case CONSTANT_INVOKE_DYNAMIC:
+      case ConstantPoolType.CONSTANT_INVOKE_DYNAMIC:
         return new ConstantInvokeDynamicInfo();
       default:
         throw new RuntimeException("java.lang.ClassFormatError: constant pool tag!");
@@ -64,6 +65,10 @@ public class ConstantPool {
 
   public String getUtf8(int index) {
     return ((ConstantUtf8Info) constants[index]).getValue();
+  }
+
+  public String getClassName(int index) {
+    return getUtf8(((ConstantClassInfo) constants[index]).index);
   }
 
   @Override

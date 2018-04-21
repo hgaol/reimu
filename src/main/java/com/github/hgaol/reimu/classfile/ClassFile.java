@@ -2,6 +2,7 @@ package com.github.hgaol.reimu.classfile;
 
 import com.github.hgaol.reimu.classfile.attribute.AttributeInfo;
 import com.github.hgaol.reimu.classfile.attribute.AttributeInfoUtil;
+import com.github.hgaol.reimu.util.EchoUtils;
 
 import java.util.Arrays;
 
@@ -49,9 +50,41 @@ public class ClassFile {
     this.attributes = readAttributes(reader);
   }
 
+  public MemberInfo[] getFields() {
+    return fields;
+  }
+
+  public MemberInfo[] getMethods() {
+    return methods;
+  }
+
+  public AttributeInfo[] getAttributes() {
+    return attributes;
+  }
+
+  public String getClassName() {
+    return this.constantPool.getClassName(thisClass);
+  }
+
+  public String[] getInterfaceNames() {
+    String[] interfaceNames = new String[interfaces.length];
+    for (int i = 0; i < interfaces.length; i++) {
+      interfaceNames[i] = this.constantPool.getClassName(interfaces[i]);
+    }
+    return interfaceNames;
+  }
+
+  public String getSuperClassName() {
+    if (superClass > 0) {
+      return this.constantPool.getClassName(superClass);
+    } else {
+      return "";
+    }
+  }
+
   private void readAndCheckMagic(BytesReader reader) {
     magic = reader.readInt();
-    echofln("magic number: 0x%X", magic);
+    EchoUtils.echofln("magic number: 0x%X", magic);
     if (magic != 0xCAFEBABE) {
       throw new RuntimeException("wrong magic number: " + magic);
     }
@@ -61,8 +94,8 @@ public class ClassFile {
     minorVersion = reader.readUnsignedShort();
     majorVersion = reader.readUnsignedShort();
 
-    echoln("minorVersion: " + minorVersion);
-    echoln("majorVersion: " + majorVersion);
+    EchoUtils.echoln("minorVersion: " + minorVersion);
+    EchoUtils.echoln("majorVersion: " + majorVersion);
 
     switch (majorVersion) {
       case 45:

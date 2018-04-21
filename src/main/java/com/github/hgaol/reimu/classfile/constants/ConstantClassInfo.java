@@ -5,11 +5,15 @@ import com.github.hgaol.reimu.classfile.ConstantPool;
 
 public class ConstantClassInfo implements ConstantInfo {
 
-  private ConstantPool cp;
-  private int index;
+  public ConstantPool cp;
+  public int index;
 
   public ConstantClassInfo(ConstantPool cp) {
     this.cp = cp;
+  }
+
+  public String getValue() {
+    return cp.getUtf8(index);
   }
 
   @Override

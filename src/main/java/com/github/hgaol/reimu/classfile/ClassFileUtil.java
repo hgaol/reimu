@@ -8,6 +8,11 @@ import java.nio.ByteOrder;
  */
 public class ClassFileUtil {
 
+  /**
+   * 将字节码转换为ClassFile类型
+   * @param data class binary data
+   * @return
+   */
   public static ClassFile parse(byte[] data) {
     BytesReader reader = new BytesReader(data, ByteOrder.BIG_ENDIAN);
     ClassFile cf = new ClassFile();

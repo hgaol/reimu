@@ -6,6 +6,10 @@ public class ConstantFloatInfo implements ConstantInfo {
 
   private float value;
 
+  public float getValue() {
+    return value;
+  }
+
   @Override
   public void readInfo(BytesReader reader) {
     value = reader.readFloat();

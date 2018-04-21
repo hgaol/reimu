@@ -12,6 +12,10 @@ public class ConstantStringInfo implements ConstantInfo {
     this.cp = cp;
   }
 
+  public String getValue() {
+    return cp.getUtf8(index);
+  }
+
   @Override
   public void readInfo(BytesReader reader) {
     index = reader.readUnsignedShort();

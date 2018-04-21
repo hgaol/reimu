@@ -1,5 +1,9 @@
 package com.github.hgaol.reimu;
 
+import com.github.hgaol.reimu.classfile.attribute.CodeAttribute;
+import com.github.hgaol.reimu.instructions.InstructionFactory;
+import com.github.hgaol.reimu.instructions.base.BytecodeReader;
+import com.github.hgaol.reimu.instructions.base.Instruction;
 import com.github.hgaol.reimu.classfile.MemberInfo;
 import com.github.hgaol.reimu.classfile.attribute.CodeAttribute;
 import com.github.hgaol.reimu.instructions.InstructionFactory;
@@ -8,7 +12,6 @@ import com.github.hgaol.reimu.instructions.base.Instruction;
 import com.github.hgaol.reimu.rtda.Frame;
 import com.github.hgaol.reimu.rtda.Thread;
 import com.github.hgaol.reimu.util.VMUtils;
-import org.apache.commons.lang3.builder.RecursiveToStringStyle;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -43,6 +46,7 @@ public class Interpreter {
       reader.reset(bytecode, pc);
       byte opcode = reader.getByte();
       Instruction inst = InstructionFactory.newInstruction(opcode);
+      assert inst != null;
       inst.fetchOperands(reader);
       frame.setNextPc(reader.getPc());
 

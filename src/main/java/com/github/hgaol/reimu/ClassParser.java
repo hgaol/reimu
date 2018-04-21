@@ -5,6 +5,7 @@ import com.github.hgaol.reimu.classfile.ClassFileUtil;
 import com.github.hgaol.reimu.classfile.MemberInfo;
 import com.github.hgaol.reimu.classpath.ClassPath;
 import com.github.hgaol.reimu.cmd.CmdInfo;
+import com.github.hgaol.reimu.util.EchoUtils;
 
 import java.util.Arrays;
 
@@ -30,7 +31,7 @@ public class ClassParser {
   public static void startJVM(CmdInfo cmd) {
     // 1. 创建classpath对象
     ClassPath classPath = new ClassPath(cmd.xjre, cmd.cp);
-    echof("classpath: %s, class: %s, args: %s\n", classPath, cmd.cls, Arrays.toString(cmd.args));
+    EchoUtils.echof("classpath: %s, class: %s, args: %s\n", classPath, cmd.cls, Arrays.toString(cmd.args));
     // 2. 读取文件
     // zip获取的文件名都是/为分隔符
     String className = cmd.cls.replace(".", "/");
@@ -42,11 +43,11 @@ public class ClassParser {
 
     // 3. 解析文件
     ClassFile cf = ClassFileUtil.parse(data);
-    echoln(cf);
+    EchoUtils.echoln(cf);
 
     MemberInfo mainMethod = getMainMethod(cf);
     if (mainMethod == null) {
-      echof("Main method not found in class %s\n", cmd.cls);
+      EchoUtils.echof("Main method not found in class %s\n", cmd.cls);
     } else {
       Interpreter.interpret(mainMethod);
     }

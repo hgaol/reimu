@@ -8,7 +8,7 @@ import com.github.hgaol.reimu.instructions.loads.*;
 import com.github.hgaol.reimu.instructions.math.Incs;
 import com.github.hgaol.reimu.instructions.stores.*;
 import com.github.hgaol.reimu.rtda.Frame;
-import com.github.hgaol.reimu.rtda.ReObject;
+import com.github.hgaol.reimu.rtda.heap.ReObject;
 
 /**
  * @author Gao Han

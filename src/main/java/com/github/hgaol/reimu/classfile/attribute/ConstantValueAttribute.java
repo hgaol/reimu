@@ -6,6 +6,10 @@ public class ConstantValueAttribute implements AttributeInfo{
 
   private int constantValueIndex;
 
+  public int getConstantValueIndex() {
+    return constantValueIndex;
+  }
+
   @Override
   public void readInfo(BytesReader reader) {
     this.constantValueIndex = reader.readUnsignedShort();
