@@ -107,6 +107,10 @@ public class ClassLoader {
     // TODO
   }
 
+  /**
+   * 解析类的实例成员变量、静态成员变量、分配并初始化static final类型的成员变量
+   * @param clazz class
+   */
   private void prepare(Class clazz) {
     calcInstantceFieldSlotIds(clazz);
     calcStaticFieldSlotIds(clazz);
@@ -167,7 +171,7 @@ public class ClassLoader {
    */
   private void initStaticFinalVar(Class clazz, Class.Field field) {
     Slots staticVars = clazz.getStaticVars();
-    Class.RtConstantPool cp = clazz.getConstantPool();
+    RtConstantPool cp = clazz.getConstantPool();
     int cpIndex = field.constValueIndex;
     int slotId = field.slotId;
 

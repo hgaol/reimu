@@ -1,7 +1,6 @@
 package com.github.hgaol.reimu.rtda.heap;
 
 import com.github.hgaol.reimu.classfile.ClassFile;
-import com.github.hgaol.reimu.classfile.ConstantPool;
 import com.github.hgaol.reimu.classfile.MemberInfo;
 import com.github.hgaol.reimu.classfile.attribute.CodeAttribute;
 import com.github.hgaol.reimu.classfile.attribute.ConstantValueAttribute;
@@ -41,65 +40,6 @@ public class Class {
     this.fields = newFields(this, cf.getFields());
     this.methods = newMethods(this, cf.getMethods());
     // loader, superClass, interfaces等都是在类加载的时候解析的
-  }
-
-  public static class RtConstantPool {
-    private Class clazz;
-    private Object[] constant;
-
-    public RtConstantPool(Class clazz, ConstantPool cfCp) {
-      this.clazz = clazz;
-      constant = new Object[cfCp.constants.length];
-
-      for (int i = 0; i < cfCp.constants.length; i++) {
-        ConstantInfo cfInfo = cfCp.constants[i];
-        ConstantType constantType = ConstantType.valueOf(cfInfo.getClass().getSimpleName());
-        switch (constantType) {
-          case ConstantIntegerInfo:
-            constant[i] = ((ConstantIntegerInfo) cfInfo).getValue();
-          case ConstantFloatInfo:
-            constant[i] = ((ConstantFloatInfo) cfInfo).getValue();
-          case ConstantLongInfo:
-            constant[i] = ((ConstantLongInfo) cfInfo).getValue();
-            i++;
-          case ConstantDoubleInfo:
-            constant[i] = ((ConstantDoubleInfo) cfInfo).getValue();
-            i++;
-          case ConstantStringInfo:
-            constant[i] = ((ConstantStringInfo) cfInfo).getValue();
-          case ConstantClassInfo:
-            constant[i] = new CpInfos.ClassRef(this, (ConstantClassInfo) cfInfo);
-          case ConstantFieldrefInfo:
-            constant[i] = new CpInfos.FieldRef(this, (ConstantFieldrefInfo) cfInfo);
-          case ConstantMethodrefInfo:
-            constant[i] = new CpInfos.MethodRef(this, (ConstantMethodrefInfo) cfInfo);
-          case ConstantInterfacemethodrefInfo:
-            constant[i] = new CpInfos.InterfaceMethodRef(this, (ConstantInterfaceMethodrefInfo) cfInfo);
-          default:
-        }
-      }
-
-    }
-
-    public Object getConstant(int index) {
-      Object val = this.constant[index];
-      if (val == null) {
-        throw new Error("No constants at index " + index);
-      }
-      return val;
-    }
-
-    enum ConstantType {
-      ConstantIntegerInfo,
-      ConstantFloatInfo,
-      ConstantLongInfo,
-      ConstantDoubleInfo,
-      ConstantStringInfo,
-      ConstantClassInfo,
-      ConstantFieldrefInfo,
-      ConstantMethodrefInfo,
-      ConstantInterfacemethodrefInfo
-    }
   }
 
   /**
@@ -332,4 +272,56 @@ public class Class {
     this.staticVars = staticVars;
     return this;
   }
+
+  /**
+   * 判断当前类是否能被d类所访问<br/>
+   *
+   * @param d 希望访问的类
+   * @return
+   */
+  public boolean isAccessableTo(Class d) {
+    return this.isPublic() || this.getPackageName().equals(d.getPackageName());
+  }
+
+  private String getPackageName() {
+    int i = this.name.lastIndexOf("/");
+    if (i >= 0) {
+      return this.name.substring(0, i);
+    }
+    return "";
+  }
+
+  public boolean isPublic() {
+    return 0 != (this.accessFlags & AccessFlags.ACC_PUBLIC);
+  }
+
+  public boolean isFinal() {
+    return 0 != (this.accessFlags & AccessFlags.ACC_FINAL);
+  }
+
+  public boolean isSuper() {
+    return 0 != (this.accessFlags & AccessFlags.ACC_SUPER);
+  }
+
+  public boolean isInterface() {
+    return 0 != (this.accessFlags & AccessFlags.ACC_INTERFACE);
+  }
+
+  public boolean isAbstract() {
+    return 0 != (this.accessFlags & AccessFlags.ACC_ABSTRACT);
+  }
+
+  public boolean isSynthetic() {
+    return 0 != (this.accessFlags & AccessFlags.ACC_SYNTHETIC);
+  }
+
+  public boolean isAnnotation() {
+    return 0 != (this.accessFlags & AccessFlags.ACC_ANNOTATION);
+  }
+
+  public boolean isEnum() {
+    return 0 != (this.accessFlags & AccessFlags.ACC_ENUM);
+  }
+
 }
+
