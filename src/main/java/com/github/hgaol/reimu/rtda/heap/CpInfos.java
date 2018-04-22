@@ -67,6 +67,30 @@ public class CpInfos {
       super(refInfo);
       this.cp = cp;
     }
+
+    public Class.Field resolvedField() {
+      if (this.field == null) {
+        resolveFieldRef();
+      }
+      return this.field;
+    }
+
+    private void resolveFieldRef() {
+      Class d = cp.getClazz();
+      Class c = d.getLoader().loadClass(className);
+      Class.Field field = lookupField(c, this.name, this.descriptor);
+
+      if (field == null) {
+        throw new Error("java.lang.NoSuchFieldError");
+      }
+
+      if (!field.isAccessableTo(d))
+    }
+
+    private Class.Field lookupField(Class c, String name, String descriptor) {
+
+    }
+
   }
 
 

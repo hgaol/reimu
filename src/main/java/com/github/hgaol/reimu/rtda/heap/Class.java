@@ -283,7 +283,17 @@ public class Class {
     return this.isPublic() || this.getPackageName().equals(d.getPackageName());
   }
 
-  private String getPackageName() {
+  public boolean isSubClassOf(Class other) {
+    // 看链上是否有父类和other类相同
+    for (Class spClass = this.superClass; spClass != null; spClass = spClass.superClass) {
+      if (spClass == other) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public String getPackageName() {
     int i = this.name.lastIndexOf("/");
     if (i >= 0) {
       return this.name.substring(0, i);

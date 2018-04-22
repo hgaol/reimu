@@ -23,6 +23,34 @@ public class ClassMember {
   }
 
   /**
+   * 一个成员能否被调用，看
+   * <p>
+   * 1. 是否是public<br/>
+   * 2. 如果是protected所在类是否是调用类的父类，或者在同一package下或同一个类<br/>
+   * 3. 如果不是private，则看是否在同一个package下<br/>
+   * 4. c和d是否是同一个类<br/>
+   * </p>
+   * @param d 调用类
+   * @return
+   */
+  public boolean isAccessableTo(Class d) {
+    if (this.isPublic()) {
+      return true;
+    }
+    Class c = this.clazz;
+    // 如果是protected，则当前类c是调用类d的父类，或者同一个类，或者在同一个package下
+    if (this.isProtected()) {
+      return d == c || d.isSubClassOf(c)
+          || c.getPackageName().equals(d.getPackageName());
+    }
+    // 如果不是私有的，则看是否在同一个package下
+    if (!this.isPrivate()) {
+      return c.getPackageName().equals(d.getPackageName());
+    }
+    return d == c;
+  }
+
+  /**
    * 判断该成员函数/变量是否为静态的
    * @return
    */
@@ -37,7 +65,7 @@ public class ClassMember {
   public boolean isPrivate() {
     return 0 != (this.accessFlags & AccessFlags.ACC_PRIVATE);
   }
-  public boolean isProteded() {
+  public boolean isProtected() {
     return 0 != (this.accessFlags & AccessFlags.ACC_PROTECTED);
   }
   public boolean isFinal() {
