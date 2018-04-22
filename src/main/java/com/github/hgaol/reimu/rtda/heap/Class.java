@@ -6,9 +6,11 @@ import com.github.hgaol.reimu.classfile.MemberInfo;
 import com.github.hgaol.reimu.classfile.attribute.CodeAttribute;
 import com.github.hgaol.reimu.classfile.attribute.ConstantValueAttribute;
 import com.github.hgaol.reimu.classfile.constants.*;
+import com.github.hgaol.reimu.rtda.Slots;
 
 /**
  * 这个类主要为了将classfile的格式解析为真正运行时使用的class结构
+ *
  * @author Gao Han
  * @date: 2018年04月12日
  */
@@ -16,12 +18,14 @@ public class Class {
 
   private int accessFlags;
   private String name;
+  // 超类全限定名
   private String superClassName;
   private String[] interfaceNames;
   private RtConstantPool constantPool;
   private Field[] fields;
   private Method[] methods;
   private ClassLoader loader;
+  // 解析后的超类
   private Class superClass;
   private Class[] interfaces;
   private int instanceSlotCount;
@@ -36,7 +40,7 @@ public class Class {
     this.constantPool = new RtConstantPool(this, cf.constantPool);
     this.fields = newFields(this, cf.getFields());
     this.methods = newMethods(this, cf.getMethods());
-    // TODO
+    // loader, superClass, interfaces等都是在类加载的时候解析的
   }
 
   public static class RtConstantPool {
@@ -74,6 +78,15 @@ public class Class {
           default:
         }
       }
+
+    }
+
+    public Object getConstant(int index) {
+      Object val = this.constant[index];
+      if (val == null) {
+        throw new Error("No constants at index " + index);
+      }
+      return val;
     }
 
     enum ConstantType {
@@ -112,8 +125,12 @@ public class Class {
     return methods;
   }
 
+  /**
+   * Class的成员变量信息
+   */
   public static class Field extends ClassMember {
     protected int constValueIndex;
+    // 这个field对应的slotId
     protected int slotId;
 
     public Field(Class clazz, MemberInfo cfField) {
@@ -134,6 +151,23 @@ public class Class {
         this.constValueIndex = valAttr.getConstantValueIndex();
       }
     }
+
+    public boolean isVolatile() {
+      return 0 != (this.accessFlags & AccessFlags.ACC_VOLATILE);
+    }
+
+    public boolean isTransient() {
+      return 0 != (this.accessFlags & AccessFlags.ACC_TRANSIENT);
+    }
+
+    public boolean isEnum() {
+      return 0 != (this.accessFlags & AccessFlags.ACC_ENUM);
+    }
+
+    public boolean isLongOrDouble() {
+      return this.descriptor.equals("J") || this.descriptor.equals("D");
+    }
+
   }
 
   public static class Method extends ClassMember {
@@ -156,38 +190,30 @@ public class Class {
       }
     }
 
-  }
-
-  public static class Slots {
-    private Slot[] slots;
-
-    public static class Slot {
-      private int num;
-      private ReObject ref;
-
+    public boolean isSynchronized() {
+      return 0 != (this.accessFlags & AccessFlags.ACC_SYNCHRONIZED);
     }
 
-  }
+    public boolean isBridge() {
+      return 0 != (this.accessFlags & AccessFlags.ACC_BRIDGE);
+    }
 
-  private static class AccessFlags {
-    final static int ACC_PUBLIC = 0x0001;
-    final static int ACC_PRIVATE = 0x0002;
-    final static int ACC_protected = 0x0004;
-    final static int ACC_static = 0x0008;
-    final static int acc_final = 0x0010;
-    final static int acc_super = 0x0020;
-    final static int acc_synchronized = 0x0020;
-    final static int acc_volatile = 0x0040;
-    final static int acc_bridge = 0x0040;
-    final static int acc_transient = 0x0080;
-    final static int acc_varages = 0x0080;
-    final static int acc_native = 0x0100;
-    final static int acc_interface = 0x0200;
-    final static int acc_abstract = 0x0400;
-    final static int acc_strict = 0x0800;
-    final static int acc_synthetic = 0x1000;
-    final static int acc_annotation = 0x2000;
-    final static int acc_enum = 0x4000;
+    public boolean isVarargs() {
+      return 0 != (this.accessFlags & AccessFlags.ACC_VARAGES);
+    }
+
+    public boolean isNative() {
+      return 0 != (this.accessFlags & AccessFlags.ACC_NATIVE);
+    }
+
+    public boolean isAbstract() {
+      return 0 != (this.accessFlags & AccessFlags.ACC_ABSTRACT);
+    }
+
+    public boolean isStrict() {
+      return 0 != (this.accessFlags & AccessFlags.ACC_STRICT);
+    }
+
   }
 
   public int getAccessFlags() {

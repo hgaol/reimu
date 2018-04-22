@@ -22,4 +22,28 @@ public class ClassMember {
     this.descriptor = cfInfo.getDescriptor();
   }
 
+  /**
+   * 判断该成员函数/变量是否为静态的
+   * @return
+   */
+  public boolean isStatic() {
+    return 0 != (this.accessFlags & AccessFlags.ACC_STATIC);
+  }
+
+  public boolean isPublic() {
+    return 0 != (this.accessFlags & AccessFlags.ACC_PUBLIC);
+  }
+
+  public boolean isPrivate() {
+    return 0 != (this.accessFlags & AccessFlags.ACC_PRIVATE);
+  }
+  public boolean isProteded() {
+    return 0 != (this.accessFlags & AccessFlags.ACC_PROTECTED);
+  }
+  public boolean isFinal() {
+    return 0 != (this.accessFlags & AccessFlags.ACC_FINAL);
+  }
+  public boolean isSyntehetic() {
+    return 0 != (this.accessFlags & AccessFlags.ACC_SYNTHETIC);
+  }
 }

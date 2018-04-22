@@ -3,6 +3,7 @@ package com.github.hgaol.reimu.rtda.heap;
 import com.github.hgaol.reimu.classfile.ClassFile;
 import com.github.hgaol.reimu.classfile.ClassFileUtil;
 import com.github.hgaol.reimu.classpath.ClassPath;
+import com.github.hgaol.reimu.rtda.Slots;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,11 +40,14 @@ public class ClassLoader {
   /**
    * <h4>加载非数组类型的类</h4>
    * @param name Class全限定名
-   * @return
+   * @return 解析好的Class对象
    */
   private Class loadNonArrayClass(String name) {
     byte[] data = readClass(name);
-    return null;
+    Class clazz = defineClass(data);
+    link(clazz);
+    System.out.printf("[Loaded %s]\n", name);
+    return clazz;
   }
 
   /**
@@ -66,8 +70,138 @@ public class ClassLoader {
   private Class defineClass(byte[] data) {
     Class clazz = parseClass(data);
     clazz.setLoader(this);
-    // TODO
+    resolveSuperClass(clazz);
+    resolveInterfaces(clazz);
+    classMap.put(clazz.getName(), clazz);
     return clazz;
+  }
+
+  /**
+   * 递归加载父类
+   * @param clazz class
+   */
+  private void resolveSuperClass(Class clazz) {
+    if (clazz.getName().equals("java/lang/Object")) {
+      clazz.setSuperClass(clazz.getLoader().loadClass(clazz.getSuperClassName()));
+    }
+  }
+
+  /**
+   * 加载接口
+   * @param clazz
+   */
+  private void resolveInterfaces(Class clazz) {
+    clazz.setInterfaces(new Class[clazz.getInterfaceNames().length]);
+    for (int i = 0; i < clazz.getInterfaceNames().length; i++) {
+      clazz.getInterfaces()[i] = clazz.getLoader().loadClass(clazz.getInterfaceNames()[i]);
+    }
+  }
+
+  private void link(Class clazz) {
+    // TODO
+    verify(clazz);
+    prepare(clazz);
+  }
+
+  private void verify(Class clazz) {
+    // TODO
+  }
+
+  private void prepare(Class clazz) {
+    calcInstantceFieldSlotIds(clazz);
+    calcStaticFieldSlotIds(clazz);
+    allocAndInitStaticVars(clazz);
+  }
+
+  /**
+   * 计算实例成员变量对应的slotId
+   * @param clazz class
+   */
+  private void calcInstantceFieldSlotIds(Class clazz) {
+    int slotId = 0;
+    // 如果父类不为空，则slotId从父类的最后一个开始（排在父类后面，父类会先被加载）
+    if (clazz.getSuperClass() != null) {
+      slotId = clazz.getSuperClass().getInstanceSlotCount();
+    }
+    for (Class.Field field : clazz.getFields()) {
+      if (!field.isStatic()) {
+        field.slotId = slotId;
+        slotId++;
+        if (field.isLongOrDouble()) {
+          slotId++;
+        }
+      }
+    }
+    clazz.setInstanceSlotCount(slotId);
+  }
+
+  /**
+   * 计算静态成员变量对应的slotId，静态的不需要考虑父类的
+   * @param clazz
+   */
+  private void calcStaticFieldSlotIds(Class clazz) {
+    int slotId = 0;
+    for (Class.Field field : clazz.getFields()) {
+      if (field.isStatic()) {
+        field.slotId = slotId;
+        slotId++;
+        if (field.isLongOrDouble()) {
+          slotId++;
+        }
+      }
+    }
+    clazz.setStaticSlotCount(slotId);
+  }
+
+  private void allocAndInitStaticVars(Class clazz) {
+    clazz.setStaticVars(new Slots(clazz.getStaticSlotCount()));
+    for (Class.Field field : clazz.getFields()) {
+      initStaticFinalVar(clazz, field);
+    }
+  }
+
+  /**
+   * 设置Class的static final的值，也就是设置{@link Class}的staticVars
+   * @param clazz
+   * @param field
+   */
+  private void initStaticFinalVar(Class clazz, Class.Field field) {
+    Slots staticVars = clazz.getStaticVars();
+    Class.RtConstantPool cp = clazz.getConstantPool();
+    int cpIndex = field.constValueIndex;
+    int slotId = field.slotId;
+
+    if (cpIndex > 0) {
+      switch (field.descriptor) {
+        // 基本类型boolean
+        case "Z":
+        // 基本类型byte
+        case "B":
+        // 基本类型char
+        case "C":
+        // 基本类型short
+        case "S":
+        // 基本类型int
+        case "I":
+          staticVars.setInt(slotId, (int) cp.getConstant(cpIndex));
+          break;
+        // 基本类型long
+        case "J":
+          staticVars.setLong(slotId, (long) cp.getConstant(cpIndex));
+          break;
+        // 基本类型float
+        case "F":
+          staticVars.setFloat(slotId, (float) cp.getConstant(cpIndex));
+          break;
+        // 基本类型float
+        case "D":
+          staticVars.setDouble(slotId, (double) cp.getConstant(cpIndex));
+          break;
+        // 基本类型float
+        case "Ljava/lang/String":
+          throw new Error("todo");
+      }
+    }
   }
 
   public static Class parseClass(byte[] data) {

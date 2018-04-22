@@ -51,7 +51,7 @@ public class ConstantPool {
       case ConstantPoolType.CONSTANT_INTERFACE_METHODREF:
         return new ConstantInterfaceMethodrefInfo(cp);
       case ConstantPoolType.CONSTANT_NAMEANDTYPE:
-        return new ConstantNameAndTypeInfo(cp);
+        return new ConstantNameAndTypeInfo();
       case ConstantPoolType.CONSTANT_METHOD_TYPE:
         return new ConstantMethodTypeInfo();
       case ConstantPoolType.CONSTANT_METHOD_HANDLE:
