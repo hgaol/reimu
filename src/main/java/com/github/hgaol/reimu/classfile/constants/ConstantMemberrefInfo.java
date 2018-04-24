@@ -14,7 +14,7 @@ public class ConstantMemberrefInfo implements ConstantInfo {
   protected int nameAndTypeIndex;
 
   public String getClassName() {
-    return cp.getUtf8(classIndex);
+    return cp.getClassName(classIndex);
   }
 
   public String getName() {

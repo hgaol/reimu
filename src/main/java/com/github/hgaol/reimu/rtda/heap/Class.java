@@ -4,7 +4,6 @@ import com.github.hgaol.reimu.classfile.ClassFile;
 import com.github.hgaol.reimu.classfile.MemberInfo;
 import com.github.hgaol.reimu.classfile.attribute.CodeAttribute;
 import com.github.hgaol.reimu.classfile.attribute.ConstantValueAttribute;
-import com.github.hgaol.reimu.classfile.constants.*;
 import com.github.hgaol.reimu.rtda.Slots;
 
 /**
@@ -23,7 +22,7 @@ public class Class {
   private RtConstantPool constantPool;
   private Field[] fields;
   private Method[] methods;
-  private ClassLoader loader;
+  private ReClassLoader loader;
   // 解析后的超类
   private Class superClass;
   private Class[] interfaces;
@@ -65,6 +64,25 @@ public class Class {
     return methods;
   }
 
+  public ReObject newObject() {
+    return new ReObject(this);
+  }
+
+  public Method getMainMethod() {
+    return this.getStaticMethod("main", "([Ljava/lang/String;)V");
+  }
+
+  public Method getStaticMethod(String name, String descriptor) {
+    for (Method method : methods) {
+      if (method.isStatic() &&
+          method.name.equals(name) &&
+          method.descriptor.equals(descriptor)) {
+        return method;
+      }
+    }
+    return null;
+  }
+
   /**
    * Class的成员变量信息
    */
@@ -77,6 +95,14 @@ public class Class {
       this.clazz = clazz;
       this.copyMemberInfo(cfField);
       this.copyAttributes(cfField);
+    }
+
+    public int getConstValueIndex() {
+      return constValueIndex;
+    }
+
+    public int getSlotId() {
+      return slotId;
     }
 
     /**
@@ -111,14 +137,26 @@ public class Class {
   }
 
   public static class Method extends ClassMember {
-    protected long maxStack;
-    protected long maxLocals;
+    protected int maxStack;
+    protected int maxLocals;
     protected byte[] code;
 
     public Method(Class clazz, MemberInfo cfField) {
       this.clazz = clazz;
       this.copyMemberInfo(cfField);
       this.copyAttributes(cfField);
+    }
+
+    public int getMaxStack() {
+      return maxStack;
+    }
+
+    public int getMaxLocals() {
+      return maxLocals;
+    }
+
+    public byte[] getCode() {
+      return code;
     }
 
     public void copyAttributes(MemberInfo cfMethod) {
@@ -219,11 +257,11 @@ public class Class {
     return this;
   }
 
-  public ClassLoader getLoader() {
+  public ReClassLoader getLoader() {
     return loader;
   }
 
-  public Class setLoader(ClassLoader loader) {
+  public Class setLoader(ReClassLoader loader) {
     this.loader = loader;
     return this;
   }
@@ -299,6 +337,52 @@ public class Class {
       return this.name.substring(0, i);
     }
     return "";
+  }
+
+  public boolean isInstanceOf(Class clazz) {
+    return clazz.isAssignableFrom(this);
+  }
+
+  /**
+   * this是other的父类或者接口
+   * @param other
+   * @return
+   */
+  public boolean isAssignableFrom(Class other) {
+    if (this == other) {
+      return true;
+    }
+
+    if (this.isInterface()) {
+      return other.isImplements(this);
+    } else {
+      return other.isSubClassOf(this);
+    }
+  }
+
+  /**
+   * this implements iface
+   * @param iface
+   * @return
+   */
+  public boolean isImplements(Class iface) {
+    for (Class c = this; c != null; c = c.superClass) {
+      for (Class i : c.interfaces) {
+        if (i == iface || i.isSubInterfaceOf(iface)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  public boolean isSubInterfaceOf(Class iface) {
+    for (Class superInterface : this.interfaces) {
+      if (superInterface == iface || superInterface.isSubInterfaceOf(iface)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   public boolean isPublic() {

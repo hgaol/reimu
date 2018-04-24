@@ -74,4 +74,20 @@ public class ClassMember {
   public boolean isSyntehetic() {
     return 0 != (this.accessFlags & AccessFlags.ACC_SYNTHETIC);
   }
+
+  public int getAccessFlags() {
+    return accessFlags;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public String getDescriptor() {
+    return descriptor;
+  }
+
+  public Class getClazz() {
+    return clazz;
+  }
 }

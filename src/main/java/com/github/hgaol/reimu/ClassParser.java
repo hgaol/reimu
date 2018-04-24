@@ -1,16 +1,12 @@
 package com.github.hgaol.reimu;
 
-import com.github.hgaol.reimu.classfile.ClassFile;
-import com.github.hgaol.reimu.classfile.ClassFileUtil;
-import com.github.hgaol.reimu.classfile.MemberInfo;
 import com.github.hgaol.reimu.classpath.ClassPath;
 import com.github.hgaol.reimu.cmd.CmdInfo;
+import com.github.hgaol.reimu.rtda.heap.Class;
+import com.github.hgaol.reimu.rtda.heap.ReClassLoader;
 import com.github.hgaol.reimu.util.EchoUtils;
 
 import java.util.Arrays;
-
-import static com.github.hgaol.reimu.util.EchoUtils.echof;
-import static com.github.hgaol.reimu.util.EchoUtils.echoln;
 
 /**
  * Poor java virtual machine
@@ -33,33 +29,17 @@ public class ClassParser {
     ClassPath classPath = new ClassPath(cmd.xjre, cmd.cp);
     EchoUtils.echof("classpath: %s, class: %s, args: %s\n", classPath, cmd.cls, Arrays.toString(cmd.args));
     // 2. 读取文件
+    ReClassLoader loader = new ReClassLoader(classPath);
     // zip获取的文件名都是/为分隔符
     String className = cmd.cls.replace(".", "/");
-    byte[] data = classPath.readClass(className);
+    Class mainClass = loader.loadClass(className);
+    Class.Method mainMethod = mainClass.getMainMethod();
 
-    if (data == null) {
-      System.err.println("Could not find or load class " + cmd.cls);
-    }
-
-    // 3. 解析文件
-    ClassFile cf = ClassFileUtil.parse(data);
-    EchoUtils.echoln(cf);
-
-    MemberInfo mainMethod = getMainMethod(cf);
     if (mainMethod == null) {
-      EchoUtils.echof("Main method not found in class %s\n", cmd.cls);
+      System.err.printf("Main method not found in class %s\n", cmd.cls);
     } else {
       Interpreter.interpret(mainMethod);
     }
-  }
-
-  private static MemberInfo getMainMethod(ClassFile cf) {
-    for (MemberInfo memberInfo : cf.methods) {
-      if ("main".equals(memberInfo.getName()) && "([Ljava/lang/String;)V".equals(memberInfo.getDescriptor())) {
-        return memberInfo;
-      }
-    }
-    return null;
   }
 
 }

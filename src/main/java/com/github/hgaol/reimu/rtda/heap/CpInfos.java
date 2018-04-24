@@ -58,6 +58,14 @@ public class CpInfos {
       this.name = refInfo.getName();
       this.descriptor = refInfo.getDescriptor();
     }
+
+    public String getName() {
+      return name;
+    }
+
+    public String getDescriptor() {
+      return descriptor;
+    }
   }
 
   public static class FieldRef extends MemberRef {
@@ -84,13 +92,43 @@ public class CpInfos {
         throw new Error("java.lang.NoSuchFieldError");
       }
 
-      if (!field.isAccessableTo(d))
+      if (!field.isAccessableTo(d)) {
+        throw new Error("java.lang.IllegalAccessError");
+      }
+
+      this.field = field;
     }
 
-    private Class.Field lookupField(Class c, String name, String descriptor) {
+  }
 
+  /**
+   * @param c
+   * @param name
+   * @param descriptor
+   * @return
+   */
+  public static Class.Field lookupField(Class c, String name, String descriptor) {
+    // 在当前类中查找field
+    for (Class.Field field : c.getFields()) {
+      if (field.name.equals(name) && field.descriptor.equals(descriptor)) {
+        return field;
+      }
     }
-
+    // 在interfaces中查找
+    for (Class iface : c.getInterfaces()) {
+      Class.Field field = lookupField(iface, name, descriptor);
+      if (field != null) {
+        return field;
+      }
+    }
+    // 在超类中查找
+    if (c.getSuperClass() != null) {
+      Class.Field field = lookupField(c.getSuperClass(), name, descriptor);
+      if (field != null) {
+        return field;
+      }
+    }
+    return null;
   }
 
 

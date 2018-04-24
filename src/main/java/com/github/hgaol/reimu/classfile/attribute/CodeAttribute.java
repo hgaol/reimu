@@ -41,10 +41,10 @@ public class CodeAttribute implements AttributeInfo {
     private int catchType;
 
     public ExceptionTableEntry(BytesReader reader) {
-      this.startPc = reader.readUnsignedByte();
-      this.endPc = reader.readUnsignedByte();
-      this.handlerPc = reader.readUnsignedByte();
-      this.catchType = reader.readUnsignedByte();
+      this.startPc = reader.readUnsignedShort();
+      this.endPc = reader.readUnsignedShort();
+      this.handlerPc = reader.readUnsignedShort();
+      this.catchType = reader.readUnsignedShort();
     }
 
     @Override

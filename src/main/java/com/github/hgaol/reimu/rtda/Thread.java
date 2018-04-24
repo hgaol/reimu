@@ -1,5 +1,7 @@
 package com.github.hgaol.reimu.rtda;
 
+import com.github.hgaol.reimu.rtda.heap.Class;
+
 /**
  * @author Gao Han
  * @date: 2018年04月10日
@@ -25,8 +27,8 @@ public class Thread {
     stack.push(frame);
   }
 
-  public Frame newFrame(int maxLocals, int maxStack) {
-    return new Frame(this, maxLocals, maxStack);
+  public Frame newFrame(Class.Method method) {
+    return new Frame(this, method);
   }
 
   public Frame popFrame() {

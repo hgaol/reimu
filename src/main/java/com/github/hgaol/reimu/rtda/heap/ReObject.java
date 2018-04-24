@@ -11,4 +11,17 @@ public class ReObject {
   private Class clazz;
   // 实例变量
   private Slots fields;
+
+  public ReObject(Class clazz) {
+    this.clazz = clazz;
+    this.fields = new Slots(clazz.getInstanceSlotCount());
+  }
+
+  public Slots getFields() {
+    return fields;
+  }
+
+  public boolean isInstanceOf(Class clazz) {
+    return clazz.isAssignableFrom(this.clazz);
+  }
 }

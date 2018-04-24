@@ -12,14 +12,14 @@ import java.util.Map;
  * @author Gao Han
  * @date: 2018年04月12日
  */
-public class ClassLoader {
+public class ReClassLoader {
   private ClassPath classPath;
   /**
    * 可以认为简单的方法区，保存已加载的Class
    */
   private Map<String, Class> classMap;
 
-  public ClassLoader(ClassPath classPath) {
+  public ReClassLoader(ClassPath classPath) {
     this.classPath = classPath;
     this.classMap = new HashMap<>();
   }

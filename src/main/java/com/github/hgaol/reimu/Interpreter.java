@@ -11,6 +11,7 @@ import com.github.hgaol.reimu.instructions.base.BytecodeReader;
 import com.github.hgaol.reimu.instructions.base.Instruction;
 import com.github.hgaol.reimu.rtda.Frame;
 import com.github.hgaol.reimu.rtda.Thread;
+import com.github.hgaol.reimu.rtda.heap.Class;
 import com.github.hgaol.reimu.util.VMUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -23,14 +24,12 @@ import static com.github.hgaol.reimu.util.EchoUtils.echof;
  */
 public class Interpreter {
 
-  public static void interpret(MemberInfo methodInfo) {
-    CodeAttribute codeAttr = methodInfo.getCodeAttribute();
-
+  public static void interpret(Class.Method method) {
     Thread thread = new Thread();
-    Frame frame = thread.newFrame(codeAttr.maxLocals, codeAttr.maxStack);
+    Frame frame = thread.newFrame(method);
     thread.pushFrame(frame);
 
-    loop(thread, codeAttr.code);
+    loop(thread, method.getCode());
   }
 
   private static void loop(Thread thread, byte[] bytecode) {
@@ -51,7 +50,7 @@ public class Interpreter {
       frame.setNextPc(reader.getPc());
 
       // execute
-      echof("pc: 0x%-2d inst: %s %s \n\tlocal-vars: %s, \n\toperand-stack: %s\n",
+      echof("pc: #%-2d inst: %s %s \n\tlocal-vars: %s, \n\toperand-stack: %s\n",
           pc, inst.getClass().getSimpleName(),
           ToStringBuilder.reflectionToString(inst, ToStringStyle.SIMPLE_STYLE),
           ToStringBuilder.reflectionToString(frame.getLocalVars()),
