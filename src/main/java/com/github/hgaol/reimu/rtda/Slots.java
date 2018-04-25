@@ -1,5 +1,7 @@
 package com.github.hgaol.reimu.rtda;
 
+import com.github.hgaol.reimu.rtda.heap.ReObject;
+
 /**
  * @author Gao Han
  * @date: 2018年04月22日
@@ -63,11 +65,11 @@ public class Slots {
     return Double.longBitsToDouble(num);
   }
 
-  public void setRef(int index, com.github.hgaol.reimu.rtda.heap.ReObject ref) {
+  public void setRef(int index, ReObject ref) {
     slots[index].ref = ref;
   }
 
-  public com.github.hgaol.reimu.rtda.heap.ReObject getRef(int index) {
+  public ReObject getRef(int index) {
     return slots[index].ref;
   }
 
@@ -75,7 +77,7 @@ public class Slots {
     return slots.length;
   }
 
-  public com.github.hgaol.reimu.rtda.heap.ReObject getThis() {
+  public ReObject getThis() {
     return getRef(0);
   }
 }

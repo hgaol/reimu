@@ -45,7 +45,7 @@ public class RtConstantPool {
         case ConstantMethodrefInfo:
           constant[i] = new CpInfos.MethodRef(this, (ConstantMethodrefInfo) cfInfo);
           break;
-        case ConstantInterfacemethodrefInfo:
+        case ConstantInterfaceMethodrefInfo:
           constant[i] = new CpInfos.InterfaceMethodRef(this, (ConstantInterfaceMethodrefInfo) cfInfo);
           break;
         default:
@@ -76,7 +76,6 @@ public class RtConstantPool {
     ConstantClassInfo,
     ConstantFieldrefInfo,
     ConstantMethodrefInfo,
-    ConstantInterfacemethodrefInfo,
     ConstantUtf8Info,
     ConstantNameAndTypeInfo,
     ConstantInterfaceMethodrefInfo,

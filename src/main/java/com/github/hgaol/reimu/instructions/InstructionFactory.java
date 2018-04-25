@@ -9,6 +9,7 @@ import com.github.hgaol.reimu.instructions.constants.IPush;
 import com.github.hgaol.reimu.instructions.constants.Ldcs;
 import com.github.hgaol.reimu.instructions.constants.Nop;
 import com.github.hgaol.reimu.instructions.control.Controls;
+import com.github.hgaol.reimu.instructions.control.Returns;
 import com.github.hgaol.reimu.instructions.conversions.D2x;
 import com.github.hgaol.reimu.instructions.conversions.F2x;
 import com.github.hgaol.reimu.instructions.conversions.I2x;
@@ -158,6 +159,13 @@ public class InstructionFactory {
   private static Instruction FCmpg = new Cmps.FCmpg();
   private static Instruction DCmpl = new Cmps.DCmpl();
   private static Instruction DCmpg = new Cmps.DCmpg();
+
+  private static Instruction Return = new Returns.Return();
+  private static Instruction IReturn = new Returns.IReturn();
+  private static Instruction FReturn = new Returns.FReturn();
+  private static Instruction DReturn = new Returns.DReturn();
+  private static Instruction LReturn = new Returns.LReturn();
+  private static Instruction AReturn = new Returns.AReturn();
 
 
   public static Instruction newInstruction(byte opcode) {
@@ -508,18 +516,18 @@ public class InstructionFactory {
         return new Controls.TableSwitch();
       case 0xab:
         return new Controls.LookupSwitch();
-      // case 0xac:
-      // 	return ireturn
-      // case 0xad:
-      // 	return lreturn
-      // case 0xae:
-      // 	return freturn
-      // case 0xaf:
-      // 	return dreturn
-      // case 0xb0:
-      // 	return areturn
-      // case 0xb1:
-      // 	return _return
+       case 0xac:
+       	return IReturn;
+       case 0xad:
+       	return LReturn;
+       case 0xae:
+       	return FReturn;
+       case 0xaf:
+       	return DReturn;
+       case 0xb0:
+       	return AReturn;
+       case 0xb1:
+       	return Return;
       case 0xb2:
         return new GetStatic();
       case 0xb3:
@@ -532,10 +540,10 @@ public class InstructionFactory {
         return new InvokeVirtual();
       case 0xb7:
         return new InvokeSpecial();
-      // case 0xb8:
-      // 	return &INVOKE_STATIC{}
-      // case 0xb9:
-      // 	return &INVOKE_INTERFACE{}
+       case 0xb8:
+       	return new InvokeStatic();
+       case 0xb9:
+       	return new InvokeInterface();
       // case 0xba:
       // 	return &INVOKE_DYNAMIC{}
       case 0xbb:

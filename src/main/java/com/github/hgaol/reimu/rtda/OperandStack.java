@@ -80,7 +80,7 @@ public class OperandStack {
   }
 
   public void pushSlot(Slot slot) {
-    slots[size] = slot;
+    slots[size] = new Slot(slot);
     size++;
   }
 
@@ -91,6 +91,10 @@ public class OperandStack {
 
   public int getSize() {
     return size;
+  }
+
+  public ReObject getRefFromTop(int n) {
+    return slots[size - 1 - n].ref;
   }
 
 }

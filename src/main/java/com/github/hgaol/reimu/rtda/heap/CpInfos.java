@@ -164,7 +164,7 @@ public class CpInfos {
       if (method == null) {
         throw new Error("java.lang.NoSuchMethodError");
       }
-      if (method.isAccessableTo(d)) {
+      if (!method.isAccessableTo(d)) {
         throw new Error("java.lang.IllegalAccessError");
       }
 
@@ -181,7 +181,7 @@ public class CpInfos {
       this.cp = cp;
     }
 
-    public ReClass.Method resolvedMethod() {
+    public ReClass.Method resolvedInterfaceMethod() {
       if (this.method == null) {
         resolveInterfaceMethodRef();
       }
@@ -202,7 +202,7 @@ public class CpInfos {
       if (method == null) {
         throw new Error("java.lang.NoSuchMethodError");
       }
-      if (method.isAccessableTo(d)) {
+      if (!method.isAccessableTo(d)) {
         throw new Error("java.lang.IllegalAccessError");
       }
 

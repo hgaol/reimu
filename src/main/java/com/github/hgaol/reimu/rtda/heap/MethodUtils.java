@@ -42,7 +42,7 @@ public class MethodUtils {
    * @param invokerFrame 当前frame
    * @param method       被调用的method
    */
-  public void InvokeMethod(Frame invokerFrame, ReClass.Method method) {
+  public static void invokeMethod(Frame invokerFrame, ReClass.Method method) {
     // 1. 用被调用的method构建新的frame，push到thread中
     Thread thread = invokerFrame.getThread();
     Frame newFrame = thread.newFrame(method);

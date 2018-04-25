@@ -2,7 +2,8 @@ package com.github.hgaol.reimu.classfile;
 
 import com.github.hgaol.reimu.classfile.attribute.AttributeInfo;
 import com.github.hgaol.reimu.classfile.attribute.AttributeInfoUtil;
-import com.github.hgaol.reimu.util.EchoUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 
@@ -13,6 +14,9 @@ import static com.github.hgaol.reimu.util.EchoUtils.*;
  * @date: 2018年04月04日
  */
 public class ClassFile {
+
+  private static final Logger logger = LoggerFactory.getLogger(ClassFile.class);
+
   // u4
   public int magic;
   // u2
@@ -84,9 +88,9 @@ public class ClassFile {
 
   private void readAndCheckMagic(BytesReader reader) {
     magic = reader.readInt();
-    EchoUtils.echofln("magic number: 0x%X", magic);
+    logger.debug("magic number: 0x{}", Integer.toHexString(magic));
     if (magic != 0xCAFEBABE) {
-      throw new RuntimeException("wrong magic number: " + magic);
+      throw new Error("wrong magic number: " + magic);
     }
   }
 
@@ -94,8 +98,8 @@ public class ClassFile {
     minorVersion = reader.readUnsignedShort();
     majorVersion = reader.readUnsignedShort();
 
-    EchoUtils.echoln("minorVersion: " + minorVersion);
-    EchoUtils.echoln("majorVersion: " + majorVersion);
+    logger.debug("minorVersion: " + minorVersion);
+    logger.debug("majorVersion: " + majorVersion);
 
     switch (majorVersion) {
       case 45:

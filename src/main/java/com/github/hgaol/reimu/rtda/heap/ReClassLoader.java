@@ -50,6 +50,7 @@ public class ReClassLoader {
    * @return 解析好的Class对象
    */
   private ReClass loadNonArrayClass(String name) {
+    logger.debug("[Start load class {}]\n", name);
     byte[] data = readClass(name);
     ReClass clazz = defineClass(data);
     link(clazz);
@@ -90,7 +91,7 @@ public class ReClassLoader {
    * @param clazz class
    */
   private void resolveSuperClass(ReClass clazz) {
-    if (clazz.getName().equals("java/lang/Object")) {
+    if (!clazz.getName().equals("java/lang/Object")) {
       clazz.setSuperClass(clazz.getLoader().loadClass(clazz.getSuperClassName()));
     }
   }

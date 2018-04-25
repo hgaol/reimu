@@ -35,8 +35,12 @@ public class Thread {
     return stack.pop();
   }
 
-  public Frame currentFrame() {
+  public Frame topFrame() {
     return stack.top();
+  }
+
+  public boolean isStackEmpty() {
+    return stack.isEmpty();
   }
 
 }

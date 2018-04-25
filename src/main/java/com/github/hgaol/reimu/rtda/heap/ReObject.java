@@ -21,6 +21,10 @@ public class ReObject {
     return fields;
   }
 
+  public ReClass getClazz() {
+    return clazz;
+  }
+
   public boolean isInstanceOf(ReClass clazz) {
     return clazz.isAssignableFrom(this.clazz);
   }

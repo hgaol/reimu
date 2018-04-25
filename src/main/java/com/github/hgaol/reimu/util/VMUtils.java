@@ -16,6 +16,12 @@ public class VMUtils {
       super();
       this.setUseShortClassName(true);
       this.setUseIdentityHashCode(false);
+
+      // set multi line format
+//      this.setContentStart("[");
+//      this.setFieldSeparator(System.lineSeparator() + "  ");
+//      this.setFieldSeparatorAtStart(true);
+//      this.setContentEnd(System.lineSeparator() + "]");
     }
   }
 }

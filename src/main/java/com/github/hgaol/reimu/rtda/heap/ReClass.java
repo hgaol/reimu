@@ -36,7 +36,7 @@ public class ReClass {
   public ReClass(ClassFile cf) {
     this.accessFlags = cf.accessFlags;
     this.name = cf.getClassName();
-    this.superClassName = cf.getClassName();
+    this.superClassName = cf.getSuperClassName();
     this.interfaceNames = cf.getInterfaceNames();
     this.constantPool = new RtConstantPool(this, cf.constantPool);
     this.fields = newFields(this, cf.getFields());
@@ -144,6 +144,10 @@ public class ReClass {
     protected int maxLocals;
     protected byte[] code;
     protected int argslotCount;
+
+    public int getArgslotCount() {
+      return argslotCount;
+    }
 
     public static class MethodDescriptor {
       protected List<String> parameterTypes = new ArrayList<>();
@@ -510,6 +514,10 @@ public class ReClass {
       }
     }
     return false;
+  }
+
+  public boolean isSuperClassOf(ReClass other) {
+    return other.isSubClassOf(this);
   }
 
   public String getPackageName() {

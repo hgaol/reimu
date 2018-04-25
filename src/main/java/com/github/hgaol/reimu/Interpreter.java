@@ -24,19 +24,24 @@ public class Interpreter {
     Frame frame = thread.newFrame(method);
     thread.pushFrame(frame);
 
-    loop(thread, method.getCode());
+    try {
+      loop(thread);
+    } catch (Exception e) {
+      logFrame(thread);
+      logger.error(e.getMessage(), e);
+    }
   }
 
-  private static void loop(Thread thread, byte[] bytecode) {
-    Frame frame = thread.popFrame();
+  private static void loop(Thread thread) {
     BytecodeReader reader = new BytecodeReader();
 
     while (true) {
+      Frame frame = thread.topFrame();
       int pc = frame.getNextPc();
       thread.setPc(pc);
 
       // decode
-      reader.reset(bytecode, pc);
+      reader.reset(frame.getMethod().getCode(), pc);
       byte opcode = reader.getByte();
       Instruction inst = InstructionFactory.newInstruction(opcode);
       assert inst != null;
@@ -44,12 +49,30 @@ public class Interpreter {
       frame.setNextPc(reader.getPc());
 
       // execute
-      logger.debug("pc: #{} inst: {} {} \n\tlocal-vars: {}, \n\toperand-stack: {}\n",
+      logger.debug("class: {} method: {} pc: #{} inst: {} {} \n\tlocal-vars: {}, \n\toperand-stack: {}\n",
+          frame.getMethod().getClazz().getName(),
+          frame.getMethod().getName(),
           pc, inst.getClass().getSimpleName(),
           ToStringBuilder.reflectionToString(inst, ToStringStyle.SIMPLE_STYLE),
           ToStringBuilder.reflectionToString(frame.getLocalVars()),
           ToStringBuilder.reflectionToString(frame.getOperandStack()));
       inst.execute(frame);
+      if (thread.isStackEmpty()) {
+        break;
+      }
+    }
+  }
+
+  private static void logFrame(Thread thread) {
+    if (!thread.isStackEmpty()) {
+      Frame frame = thread.popFrame();
+      ReClass.Method method = frame.getMethod();
+      ReClass clazz = method.getClazz();
+      logger.info(">> pc:{} {}.{}{} \n",
+          frame.getNextPc(),
+          clazz.getName(),
+          method.getName(),
+          method.getDescriptor());
     }
   }
 
