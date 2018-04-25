@@ -12,7 +12,7 @@ import com.github.hgaol.reimu.rtda.Slots;
  * @author Gao Han
  * @date: 2018年04月12日
  */
-public class Class {
+public class ReClass {
 
   private int accessFlags;
   private String name;
@@ -24,13 +24,13 @@ public class Class {
   private Method[] methods;
   private ReClassLoader loader;
   // 解析后的超类
-  private Class superClass;
-  private Class[] interfaces;
+  private ReClass superClass;
+  private ReClass[] interfaces;
   private int instanceSlotCount;
   private int staticSlotCount;
   private Slots staticVars;
 
-  public Class(ClassFile cf) {
+  public ReClass(ClassFile cf) {
     this.accessFlags = cf.accessFlags;
     this.name = cf.getClassName();
     this.superClassName = cf.getClassName();
@@ -46,7 +46,7 @@ public class Class {
    * @param cfFields class file fields info
    * @return class field info
    */
-  public static Field[] newFields(Class clazz, MemberInfo[] cfFields) {
+  public static Field[] newFields(ReClass clazz, MemberInfo[] cfFields) {
     Field[] fields = new Field[cfFields.length];
     for (int i = 0; i < cfFields.length; i++) {
       fields[i] = new Field(clazz, cfFields[i]);
@@ -55,7 +55,7 @@ public class Class {
     return fields;
   }
 
-  public static Method[] newMethods(Class clazz, MemberInfo[] cfMethods) {
+  public static Method[] newMethods(ReClass clazz, MemberInfo[] cfMethods) {
     Method[] methods = new Method[cfMethods.length];
     for (int i = 0; i < cfMethods.length; i++) {
       methods[i] = new Method(clazz, cfMethods[i]);
@@ -91,7 +91,7 @@ public class Class {
     // 这个field对应的slotId
     protected int slotId;
 
-    public Field(Class clazz, MemberInfo cfField) {
+    public Field(ReClass clazz, MemberInfo cfField) {
       this.clazz = clazz;
       this.copyMemberInfo(cfField);
       this.copyAttributes(cfField);
@@ -141,7 +141,7 @@ public class Class {
     protected int maxLocals;
     protected byte[] code;
 
-    public Method(Class clazz, MemberInfo cfField) {
+    public Method(ReClass clazz, MemberInfo cfField) {
       this.clazz = clazz;
       this.copyMemberInfo(cfField);
       this.copyAttributes(cfField);
@@ -198,7 +198,7 @@ public class Class {
     return accessFlags;
   }
 
-  public Class setAccessFlags(int accessFlags) {
+  public ReClass setAccessFlags(int accessFlags) {
     this.accessFlags = accessFlags;
     return this;
   }
@@ -207,7 +207,7 @@ public class Class {
     return name;
   }
 
-  public Class setName(String name) {
+  public ReClass setName(String name) {
     this.name = name;
     return this;
   }
@@ -216,7 +216,7 @@ public class Class {
     return superClassName;
   }
 
-  public Class setSuperClassName(String superClassName) {
+  public ReClass setSuperClassName(String superClassName) {
     this.superClassName = superClassName;
     return this;
   }
@@ -225,7 +225,7 @@ public class Class {
     return interfaceNames;
   }
 
-  public Class setInterfaceNames(String[] interfaceNames) {
+  public ReClass setInterfaceNames(String[] interfaceNames) {
     this.interfaceNames = interfaceNames;
     return this;
   }
@@ -234,7 +234,7 @@ public class Class {
     return constantPool;
   }
 
-  public Class setConstantPool(RtConstantPool constantPool) {
+  public ReClass setConstantPool(RtConstantPool constantPool) {
     this.constantPool = constantPool;
     return this;
   }
@@ -243,7 +243,7 @@ public class Class {
     return fields;
   }
 
-  public Class setFields(Field[] fields) {
+  public ReClass setFields(Field[] fields) {
     this.fields = fields;
     return this;
   }
@@ -252,7 +252,7 @@ public class Class {
     return methods;
   }
 
-  public Class setMethods(Method[] methods) {
+  public ReClass setMethods(Method[] methods) {
     this.methods = methods;
     return this;
   }
@@ -261,25 +261,25 @@ public class Class {
     return loader;
   }
 
-  public Class setLoader(ReClassLoader loader) {
+  public ReClass setLoader(ReClassLoader loader) {
     this.loader = loader;
     return this;
   }
 
-  public Class getSuperClass() {
+  public ReClass getSuperClass() {
     return superClass;
   }
 
-  public Class setSuperClass(Class superClass) {
+  public ReClass setSuperClass(ReClass superClass) {
     this.superClass = superClass;
     return this;
   }
 
-  public Class[] getInterfaces() {
+  public ReClass[] getInterfaces() {
     return interfaces;
   }
 
-  public Class setInterfaces(Class[] interfaces) {
+  public ReClass setInterfaces(ReClass[] interfaces) {
     this.interfaces = interfaces;
     return this;
   }
@@ -288,7 +288,7 @@ public class Class {
     return instanceSlotCount;
   }
 
-  public Class setInstanceSlotCount(int instanceSlotCount) {
+  public ReClass setInstanceSlotCount(int instanceSlotCount) {
     this.instanceSlotCount = instanceSlotCount;
     return this;
   }
@@ -297,7 +297,7 @@ public class Class {
     return staticSlotCount;
   }
 
-  public Class setStaticSlotCount(int staticSlotCount) {
+  public ReClass setStaticSlotCount(int staticSlotCount) {
     this.staticSlotCount = staticSlotCount;
     return this;
   }
@@ -306,7 +306,7 @@ public class Class {
     return staticVars;
   }
 
-  public Class setStaticVars(Slots staticVars) {
+  public ReClass setStaticVars(Slots staticVars) {
     this.staticVars = staticVars;
     return this;
   }
@@ -317,13 +317,13 @@ public class Class {
    * @param d 希望访问的类
    * @return
    */
-  public boolean isAccessableTo(Class d) {
+  public boolean isAccessableTo(ReClass d) {
     return this.isPublic() || this.getPackageName().equals(d.getPackageName());
   }
 
-  public boolean isSubClassOf(Class other) {
+  public boolean isSubClassOf(ReClass other) {
     // 看链上是否有父类和other类相同
-    for (Class spClass = this.superClass; spClass != null; spClass = spClass.superClass) {
+    for (ReClass spClass = this.superClass; spClass != null; spClass = spClass.superClass) {
       if (spClass == other) {
         return true;
       }
@@ -339,7 +339,7 @@ public class Class {
     return "";
   }
 
-  public boolean isInstanceOf(Class clazz) {
+  public boolean isInstanceOf(ReClass clazz) {
     return clazz.isAssignableFrom(this);
   }
 
@@ -348,7 +348,7 @@ public class Class {
    * @param other
    * @return
    */
-  public boolean isAssignableFrom(Class other) {
+  public boolean isAssignableFrom(ReClass other) {
     if (this == other) {
       return true;
     }
@@ -365,9 +365,9 @@ public class Class {
    * @param iface
    * @return
    */
-  public boolean isImplements(Class iface) {
-    for (Class c = this; c != null; c = c.superClass) {
-      for (Class i : c.interfaces) {
+  public boolean isImplements(ReClass iface) {
+    for (ReClass c = this; c != null; c = c.superClass) {
+      for (ReClass i : c.interfaces) {
         if (i == iface || i.isSubInterfaceOf(iface)) {
           return true;
         }
@@ -376,8 +376,8 @@ public class Class {
     return false;
   }
 
-  public boolean isSubInterfaceOf(Class iface) {
-    for (Class superInterface : this.interfaces) {
+  public boolean isSubInterfaceOf(ReClass iface) {
+    for (ReClass superInterface : this.interfaces) {
       if (superInterface == iface || superInterface.isSubInterfaceOf(iface)) {
         return true;
       }

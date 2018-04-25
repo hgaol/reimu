@@ -1,6 +1,7 @@
 package com.github.hgaol.reimu.classpath;
 
 import com.github.hgaol.reimu.util.VMUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 
@@ -63,6 +64,9 @@ public class ClassPath {
       return "./jre";
     }
     String javaHome = System.getenv("JAVA_HOME");
+    if (StringUtils.isEmpty(javaHome)) {
+      throw new Error("Cannot env JAVA_HOME.");
+    }
     if (!new File(javaHome).exists()) {
       throw new Error("Cannot find jre path");
     }

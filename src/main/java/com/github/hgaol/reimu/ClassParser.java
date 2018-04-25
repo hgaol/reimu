@@ -2,7 +2,7 @@ package com.github.hgaol.reimu;
 
 import com.github.hgaol.reimu.classpath.ClassPath;
 import com.github.hgaol.reimu.cmd.CmdInfo;
-import com.github.hgaol.reimu.rtda.heap.Class;
+import com.github.hgaol.reimu.rtda.heap.ReClass;
 import com.github.hgaol.reimu.rtda.heap.ReClassLoader;
 import com.github.hgaol.reimu.util.EchoUtils;
 
@@ -32,8 +32,8 @@ public class ClassParser {
     ReClassLoader loader = new ReClassLoader(classPath);
     // zip获取的文件名都是/为分隔符
     String className = cmd.cls.replace(".", "/");
-    Class mainClass = loader.loadClass(className);
-    Class.Method mainMethod = mainClass.getMainMethod();
+    ReClass mainClass = loader.loadClass(className);
+    ReClass.Method mainMethod = mainClass.getMainMethod();
 
     if (mainMethod == null) {
       System.err.printf("Main method not found in class %s\n", cmd.cls);

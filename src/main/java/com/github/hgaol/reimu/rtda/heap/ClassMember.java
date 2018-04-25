@@ -10,7 +10,7 @@ public class ClassMember {
   protected int accessFlags;
   protected String name;
   protected String descriptor;
-  protected Class clazz;
+  protected ReClass clazz;
 
   /**
    * 将classfile的字段信息读取到ClassMember中
@@ -33,11 +33,11 @@ public class ClassMember {
    * @param d 调用类
    * @return
    */
-  public boolean isAccessableTo(Class d) {
+  public boolean isAccessableTo(ReClass d) {
     if (this.isPublic()) {
       return true;
     }
-    Class c = this.clazz;
+    ReClass c = this.clazz;
     // 如果是protected，则当前类c是调用类d的父类，或者同一个类，或者在同一个package下
     if (this.isProtected()) {
       return d == c || d.isSubClassOf(c)
@@ -87,7 +87,7 @@ public class ClassMember {
     return descriptor;
   }
 
-  public Class getClazz() {
+  public ReClass getClazz() {
     return clazz;
   }
 }

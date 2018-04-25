@@ -8,11 +8,11 @@ import com.github.hgaol.reimu.rtda.Slots;
  */
 public class ReObject {
   // 类类型的指针
-  private Class clazz;
+  private ReClass clazz;
   // 实例变量
   private Slots fields;
 
-  public ReObject(Class clazz) {
+  public ReObject(ReClass clazz) {
     this.clazz = clazz;
     this.fields = new Slots(clazz.getInstanceSlotCount());
   }
@@ -21,7 +21,7 @@ public class ReObject {
     return fields;
   }
 
-  public boolean isInstanceOf(Class clazz) {
+  public boolean isInstanceOf(ReClass clazz) {
     return clazz.isAssignableFrom(this.clazz);
   }
 }

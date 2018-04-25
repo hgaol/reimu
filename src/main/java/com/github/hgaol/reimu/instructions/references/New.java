@@ -2,7 +2,7 @@ package com.github.hgaol.reimu.instructions.references;
 
 import com.github.hgaol.reimu.instructions.base.Index16Instruction;
 import com.github.hgaol.reimu.rtda.Frame;
-import com.github.hgaol.reimu.rtda.heap.Class;
+import com.github.hgaol.reimu.rtda.heap.ReClass;
 import com.github.hgaol.reimu.rtda.heap.CpInfos;
 import com.github.hgaol.reimu.rtda.heap.ReObject;
 import com.github.hgaol.reimu.rtda.heap.RtConstantPool;
@@ -18,7 +18,7 @@ public class New extends Index16Instruction {
   public void execute(Frame frame) {
     RtConstantPool cp = frame.getMethod().getClazz().getConstantPool();
     CpInfos.ClassRef classRef = (CpInfos.ClassRef) cp.getConstant(index);
-    Class clazz = classRef.resolvedClass();
+    ReClass clazz = classRef.resolvedClass();
     // todo: init class
 
     if (clazz.isInterface() || clazz.isAbstract()) {

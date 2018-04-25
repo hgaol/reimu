@@ -1,6 +1,6 @@
 package com.github.hgaol.reimu.rtda;
 
-import com.github.hgaol.reimu.rtda.heap.Class;
+import com.github.hgaol.reimu.rtda.heap.ReClass;
 
 /**
  * @author Gao Han
@@ -11,10 +11,10 @@ public class Frame {
   private LocalVars localVars;
   private OperandStack operandStack;
   private Thread thread;
-  private Class.Method method;
+  private ReClass.Method method;
   private int nextPc;
 
-  public Frame(Thread thread, Class.Method method) {
+  public Frame(Thread thread, ReClass.Method method) {
     this.thread = thread;
     this.method = method;
     this.localVars = new LocalVars(method.getMaxLocals());
@@ -56,11 +56,11 @@ public class Frame {
     return nextPc;
   }
 
-  public Class.Method getMethod() {
+  public ReClass.Method getMethod() {
     return method;
   }
 
-  public Frame setMethod(Class.Method method) {
+  public Frame setMethod(ReClass.Method method) {
     this.method = method;
     return this;
   }

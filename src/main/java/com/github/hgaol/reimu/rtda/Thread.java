@@ -1,6 +1,6 @@
 package com.github.hgaol.reimu.rtda;
 
-import com.github.hgaol.reimu.rtda.heap.Class;
+import com.github.hgaol.reimu.rtda.heap.ReClass;
 
 /**
  * @author Gao Han
@@ -27,7 +27,7 @@ public class Thread {
     stack.push(frame);
   }
 
-  public Frame newFrame(Class.Method method) {
+  public Frame newFrame(ReClass.Method method) {
     return new Frame(this, method);
   }
 

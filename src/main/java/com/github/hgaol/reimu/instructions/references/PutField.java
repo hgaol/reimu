@@ -3,7 +3,7 @@ package com.github.hgaol.reimu.instructions.references;
 import com.github.hgaol.reimu.instructions.base.Index16Instruction;
 import com.github.hgaol.reimu.rtda.Frame;
 import com.github.hgaol.reimu.rtda.OperandStack;
-import com.github.hgaol.reimu.rtda.heap.Class;
+import com.github.hgaol.reimu.rtda.heap.ReClass;
 import com.github.hgaol.reimu.rtda.heap.CpInfos;
 import com.github.hgaol.reimu.rtda.heap.ReObject;
 import com.github.hgaol.reimu.rtda.heap.RtConstantPool;
@@ -18,11 +18,11 @@ import com.github.hgaol.reimu.rtda.heap.RtConstantPool;
 public class PutField extends Index16Instruction {
   @Override
   public void execute(Frame frame) {
-    Class.Method curMethod = frame.getMethod();
-    Class curClass = curMethod.getClazz();
+    ReClass.Method curMethod = frame.getMethod();
+    ReClass curClass = curMethod.getClazz();
     RtConstantPool cp = curClass.getConstantPool();
     CpInfos.FieldRef fieldRef = (CpInfos.FieldRef) cp.getConstant(index);
-    Class.Field field = fieldRef.resolvedField();
+    ReClass.Field field = fieldRef.resolvedField();
 
     if (field.isStatic()) {
       throw new Error("java.lang.IncompatibleClassChangeError");

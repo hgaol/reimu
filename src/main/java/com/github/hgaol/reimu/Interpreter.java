@@ -1,17 +1,11 @@
 package com.github.hgaol.reimu;
 
-import com.github.hgaol.reimu.classfile.attribute.CodeAttribute;
-import com.github.hgaol.reimu.instructions.InstructionFactory;
-import com.github.hgaol.reimu.instructions.base.BytecodeReader;
-import com.github.hgaol.reimu.instructions.base.Instruction;
-import com.github.hgaol.reimu.classfile.MemberInfo;
-import com.github.hgaol.reimu.classfile.attribute.CodeAttribute;
 import com.github.hgaol.reimu.instructions.InstructionFactory;
 import com.github.hgaol.reimu.instructions.base.BytecodeReader;
 import com.github.hgaol.reimu.instructions.base.Instruction;
 import com.github.hgaol.reimu.rtda.Frame;
 import com.github.hgaol.reimu.rtda.Thread;
-import com.github.hgaol.reimu.rtda.heap.Class;
+import com.github.hgaol.reimu.rtda.heap.ReClass;
 import com.github.hgaol.reimu.util.VMUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -24,7 +18,7 @@ import static com.github.hgaol.reimu.util.EchoUtils.echof;
  */
 public class Interpreter {
 
-  public static void interpret(Class.Method method) {
+  public static void interpret(ReClass.Method method) {
     Thread thread = new Thread();
     Frame frame = thread.newFrame(method);
     thread.pushFrame(frame);

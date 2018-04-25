@@ -8,10 +8,10 @@ import com.github.hgaol.reimu.classfile.constants.*;
  * @date: 2018年04月22日
  */
 public class RtConstantPool {
-  private Class clazz;
+  private ReClass clazz;
   private Object[] constant;
 
-  public RtConstantPool(Class clazz, ConstantPool cfCp) {
+  public RtConstantPool(ReClass clazz, ConstantPool cfCp) {
     this.clazz = clazz;
     constant = new Object[cfCp.constants.length];
 
@@ -63,7 +63,7 @@ public class RtConstantPool {
     return val;
   }
 
-  public Class getClazz() {
+  public ReClass getClazz() {
     return clazz;
   }
 

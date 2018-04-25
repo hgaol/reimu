@@ -12,14 +12,14 @@ public class CpInfos {
   public static class SymRef {
     protected RtConstantPool cp;
     protected String className;
-    protected Class clazz;
+    protected ReClass clazz;
 
     /**
      * 返回解析过的class，如果没有加载则进行加载
      *
      * @return 解析过的class
      */
-    public Class resolvedClass() {
+    public ReClass resolvedClass() {
       if (this.clazz == null) {
         resolveClassref();
       }
@@ -30,8 +30,8 @@ public class CpInfos {
      * 使用该常量池所在的class的class loader加载class
      */
     private void resolveClassref() {
-      Class d = cp.getClazz();
-      Class c = d.getLoader().loadClass(className);
+      ReClass d = cp.getClazz();
+      ReClass c = d.getLoader().loadClass(className);
       if (!c.isAccessableTo(d)) {
         throw new Error("java.lang.IllegalAccessError");
       }
@@ -69,14 +69,14 @@ public class CpInfos {
   }
 
   public static class FieldRef extends MemberRef {
-    private Class.Field field;
+    private ReClass.Field field;
 
     public FieldRef(RtConstantPool cp, ConstantMemberrefInfo refInfo) {
       super(refInfo);
       this.cp = cp;
     }
 
-    public Class.Field resolvedField() {
+    public ReClass.Field resolvedField() {
       if (this.field == null) {
         resolveFieldRef();
       }
@@ -84,9 +84,9 @@ public class CpInfos {
     }
 
     private void resolveFieldRef() {
-      Class d = cp.getClazz();
-      Class c = d.getLoader().loadClass(className);
-      Class.Field field = lookupField(c, this.name, this.descriptor);
+      ReClass d = cp.getClazz();
+      ReClass c = d.getLoader().loadClass(className);
+      ReClass.Field field = lookupField(c, this.name, this.descriptor);
 
       if (field == null) {
         throw new Error("java.lang.NoSuchFieldError");
@@ -107,23 +107,23 @@ public class CpInfos {
    * @param descriptor
    * @return
    */
-  public static Class.Field lookupField(Class c, String name, String descriptor) {
+  public static ReClass.Field lookupField(ReClass c, String name, String descriptor) {
     // 在当前类中查找field
-    for (Class.Field field : c.getFields()) {
+    for (ReClass.Field field : c.getFields()) {
       if (field.name.equals(name) && field.descriptor.equals(descriptor)) {
         return field;
       }
     }
     // 在interfaces中查找
-    for (Class iface : c.getInterfaces()) {
-      Class.Field field = lookupField(iface, name, descriptor);
+    for (ReClass iface : c.getInterfaces()) {
+      ReClass.Field field = lookupField(iface, name, descriptor);
       if (field != null) {
         return field;
       }
     }
     // 在超类中查找
     if (c.getSuperClass() != null) {
-      Class.Field field = lookupField(c.getSuperClass(), name, descriptor);
+      ReClass.Field field = lookupField(c.getSuperClass(), name, descriptor);
       if (field != null) {
         return field;
       }
@@ -133,7 +133,7 @@ public class CpInfos {
 
 
   public static class MethodRef extends MemberRef {
-    private Class.Method method;
+    private ReClass.Method method;
 
     public MethodRef(RtConstantPool cp, ConstantMemberrefInfo refInfo) {
       super(refInfo);
@@ -142,7 +142,7 @@ public class CpInfos {
   }
 
   public static class InterfaceMethodRef extends MemberRef {
-    private Class.Method method;
+    private ReClass.Method method;
 
     public InterfaceMethodRef(RtConstantPool cp, ConstantMemberrefInfo refInfo) {
       super(refInfo);

@@ -17,7 +17,7 @@ public class ReClassLoader {
   /**
    * 可以认为简单的方法区，保存已加载的Class
    */
-  private Map<String, Class> classMap;
+  private Map<String, ReClass> classMap;
 
   public ReClassLoader(ClassPath classPath) {
     this.classPath = classPath;
@@ -29,8 +29,8 @@ public class ReClassLoader {
    * @param name 类的全限定名
    * @return
    */
-  public Class loadClass(String name) {
-    Class clazz = classMap.get(name);
+  public ReClass loadClass(String name) {
+    ReClass clazz = classMap.get(name);
     if (clazz != null) {
       return clazz;
     }
@@ -42,9 +42,9 @@ public class ReClassLoader {
    * @param name Class全限定名
    * @return 解析好的Class对象
    */
-  private Class loadNonArrayClass(String name) {
+  private ReClass loadNonArrayClass(String name) {
     byte[] data = readClass(name);
-    Class clazz = defineClass(data);
+    ReClass clazz = defineClass(data);
     link(clazz);
     System.out.printf("[Loaded %s]\n", name);
     return clazz;
@@ -67,8 +67,8 @@ public class ReClassLoader {
    * @param data class binary data
    * @return
    */
-  private Class defineClass(byte[] data) {
-    Class clazz = parseClass(data);
+  private ReClass defineClass(byte[] data) {
+    ReClass clazz = parseClass(data);
     clazz.setLoader(this);
     resolveSuperClass(clazz);
     resolveInterfaces(clazz);
@@ -80,7 +80,7 @@ public class ReClassLoader {
    * 递归加载父类
    * @param clazz class
    */
-  private void resolveSuperClass(Class clazz) {
+  private void resolveSuperClass(ReClass clazz) {
     if (clazz.getName().equals("java/lang/Object")) {
       clazz.setSuperClass(clazz.getLoader().loadClass(clazz.getSuperClassName()));
     }
@@ -90,20 +90,20 @@ public class ReClassLoader {
    * 加载接口
    * @param clazz
    */
-  private void resolveInterfaces(Class clazz) {
-    clazz.setInterfaces(new Class[clazz.getInterfaceNames().length]);
+  private void resolveInterfaces(ReClass clazz) {
+    clazz.setInterfaces(new ReClass[clazz.getInterfaceNames().length]);
     for (int i = 0; i < clazz.getInterfaceNames().length; i++) {
       clazz.getInterfaces()[i] = clazz.getLoader().loadClass(clazz.getInterfaceNames()[i]);
     }
   }
 
-  private void link(Class clazz) {
+  private void link(ReClass clazz) {
     // TODO
     verify(clazz);
     prepare(clazz);
   }
 
-  private void verify(Class clazz) {
+  private void verify(ReClass clazz) {
     // TODO
   }
 
@@ -111,7 +111,7 @@ public class ReClassLoader {
    * 解析类的实例成员变量、静态成员变量、分配并初始化static final类型的成员变量
    * @param clazz class
    */
-  private void prepare(Class clazz) {
+  private void prepare(ReClass clazz) {
     calcInstantceFieldSlotIds(clazz);
     calcStaticFieldSlotIds(clazz);
     allocAndInitStaticVars(clazz);
@@ -121,13 +121,13 @@ public class ReClassLoader {
    * 计算实例成员变量对应的slotId
    * @param clazz class
    */
-  private void calcInstantceFieldSlotIds(Class clazz) {
+  private void calcInstantceFieldSlotIds(ReClass clazz) {
     int slotId = 0;
     // 如果父类不为空，则slotId从父类的最后一个开始（排在父类后面，父类会先被加载）
     if (clazz.getSuperClass() != null) {
       slotId = clazz.getSuperClass().getInstanceSlotCount();
     }
-    for (Class.Field field : clazz.getFields()) {
+    for (ReClass.Field field : clazz.getFields()) {
       if (!field.isStatic()) {
         field.slotId = slotId;
         slotId++;
@@ -143,9 +143,9 @@ public class ReClassLoader {
    * 计算静态成员变量对应的slotId，静态的不需要考虑父类的
    * @param clazz
    */
-  private void calcStaticFieldSlotIds(Class clazz) {
+  private void calcStaticFieldSlotIds(ReClass clazz) {
     int slotId = 0;
-    for (Class.Field field : clazz.getFields()) {
+    for (ReClass.Field field : clazz.getFields()) {
       if (field.isStatic()) {
         field.slotId = slotId;
         slotId++;
@@ -157,19 +157,19 @@ public class ReClassLoader {
     clazz.setStaticSlotCount(slotId);
   }
 
-  private void allocAndInitStaticVars(Class clazz) {
+  private void allocAndInitStaticVars(ReClass clazz) {
     clazz.setStaticVars(new Slots(clazz.getStaticSlotCount()));
-    for (Class.Field field : clazz.getFields()) {
+    for (ReClass.Field field : clazz.getFields()) {
       initStaticFinalVar(clazz, field);
     }
   }
 
   /**
-   * 设置Class的static final的值，也就是设置{@link Class}的staticVars
+   * 设置Class的static final的值，也就是设置{@link ReClass}的staticVars
    * @param clazz
    * @param field
    */
-  private void initStaticFinalVar(Class clazz, Class.Field field) {
+  private void initStaticFinalVar(ReClass clazz, ReClass.Field field) {
     Slots staticVars = clazz.getStaticVars();
     RtConstantPool cp = clazz.getConstantPool();
     int cpIndex = field.constValueIndex;
@@ -208,9 +208,9 @@ public class ReClassLoader {
     }
   }
 
-  public static Class parseClass(byte[] data) {
+  public static ReClass parseClass(byte[] data) {
     ClassFile cf = ClassFileUtil.parse(data);
-    return new Class(cf);
+    return new ReClass(cf);
   }
 
 }
