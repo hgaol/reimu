@@ -6,6 +6,9 @@ import com.github.hgaol.reimu.classfile.attribute.CodeAttribute;
 import com.github.hgaol.reimu.classfile.attribute.ConstantValueAttribute;
 import com.github.hgaol.reimu.rtda.Slots;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 这个类主要为了将classfile的格式解析为真正运行时使用的class结构
  *
@@ -24,7 +27,7 @@ public class ReClass {
   private Method[] methods;
   private ReClassLoader loader;
   // 解析后的超类
-  private ReClass superClass;
+  private ReClass superReClass;
   private ReClass[] interfaces;
   private int instanceSlotCount;
   private int staticSlotCount;
@@ -38,7 +41,7 @@ public class ReClass {
     this.constantPool = new RtConstantPool(this, cf.constantPool);
     this.fields = newFields(this, cf.getFields());
     this.methods = newMethods(this, cf.getMethods());
-    // loader, superClass, interfaces等都是在类加载的时候解析的
+    // loader, superReClass, interfaces等都是在类加载的时候解析的
   }
 
   /**
@@ -140,11 +143,189 @@ public class ReClass {
     protected int maxStack;
     protected int maxLocals;
     protected byte[] code;
+    protected int argslotCount;
+
+    public static class MethodDescriptor {
+      protected List<String> parameterTypes = new ArrayList<>();
+      protected String returnType;
+
+      /**
+       * @param t 参数类型，example: Ljava/lang/String;
+       */
+      public void addparameterType(String t) {
+        parameterTypes.add(t);
+      }
+    }
+
+    public static class MethodDescriptorParser {
+      protected String raw;
+      protected int offset;
+      protected MethodDescriptor parsed;
+
+      /**
+       * 对descriptor字符串进行解析，得到参数和返回值个数&类型
+       *
+       * @param descriptor example: ([Ljava/lang/String;)V
+       * @return
+       */
+      public MethodDescriptor parse(String descriptor) {
+        this.raw = descriptor;
+        this.parsed = new MethodDescriptor();
+        startParams();
+        parseParamTypes();
+        endParams();
+        parseReturnType();
+        finish();
+        return this.parsed;
+      }
+
+      /**
+       * 解析参数类型，并设置offset
+       * @return
+       */
+      private String parseFieldType() {
+        switch (readChar()) {
+          case 'B':
+            return "B";
+          case 'C':
+            return "C";
+          case 'D':
+            return "D";
+          case 'F':
+            return "F";
+          case 'I':
+            return "I";
+          case 'J':
+            return "J";
+          case 'S':
+            return "S";
+          case 'Z':
+            return "Z";
+          case 'L':
+            return parseObjectType();
+          case '[':
+            return parseArrayType();
+          default:
+            unreadChar();
+            return "";
+        }
+      }
+
+      private void startParams() {
+        if ('(' != this.readChar()) {
+          causePanic();
+        }
+      }
+
+      /**
+       * 解析参数并添加到parsed的parameterType数组中
+       */
+      private void parseParamTypes() {
+        while (true) {
+          String t = parseFieldType();
+          if (t.equals("")) {
+            break;
+          } else {
+            parsed.addparameterType(t);
+          }
+        }
+      }
+
+      private void endParams() {
+        if (readChar() != ')') {
+          causePanic();
+        }
+      }
+
+      private void parseReturnType() {
+        if (readChar() == 'V') {
+          parsed.returnType = "V";
+          return;
+        }
+
+        unreadChar();
+        String t = parseFieldType();
+        if (!"".equals(t)) {
+          parsed.returnType = t;
+          return;
+        }
+        causePanic();
+      }
+
+      private void finish() {
+        if (offset != raw.length()) {
+          causePanic();
+        }
+      }
+
+      private char readChar() {
+        char b = raw.charAt(offset);
+        offset++;
+        return b;
+      }
+
+      private void unreadChar() {
+        offset--;
+      }
+
+      /**
+       * 解析对象类型, example: Ljava/lang/String;
+       * @return example: Ljava/lang/String;
+       */
+      private String parseObjectType() {
+        String unread = raw.substring(offset);
+        int semicolonIndex = unread.indexOf(';');
+        if (semicolonIndex == -1) {
+          causePanic();
+          return "";
+        } else {
+          int start = offset - 1;
+          int end = offset + semicolonIndex + 1;
+          offset = end;
+          return raw.substring(start, end);
+        }
+      }
+
+      /**
+       * 解析数组类型，example: [Ljava/lang/String;
+       * @return example: [Ljava/lang/String;
+       */
+      private String parseArrayType() {
+        int start = offset - 1;
+        parseFieldType();
+        int end = offset;
+        return raw.substring(start, end);
+      }
+
+      private void causePanic() {
+        throw new Error("BAD descriptor: " + this.raw);
+      }
+
+    }
 
     public Method(ReClass clazz, MemberInfo cfField) {
       this.clazz = clazz;
       this.copyMemberInfo(cfField);
       this.copyAttributes(cfField);
+      this.calcArgsSlotCount();
+    }
+
+    /**
+     * 计算方法参数个数，long和double个数++
+     */
+    public void calcArgsSlotCount() {
+      MethodDescriptor parsedDescriptor = MethodUtils.parseMethodDescriptor(descriptor);
+      for (String paramType : parsedDescriptor.parameterTypes) {
+        argslotCount++;
+        // long and double ++
+        if (paramType.equals("J") || paramType.equals("D")) {
+          argslotCount++;
+        }
+      }
+      // `this` reference
+      if (!isStatic()) {
+        argslotCount++;
+      }
     }
 
     public int getMaxStack() {
@@ -267,11 +448,11 @@ public class ReClass {
   }
 
   public ReClass getSuperClass() {
-    return superClass;
+    return superReClass;
   }
 
-  public ReClass setSuperClass(ReClass superClass) {
-    this.superClass = superClass;
+  public ReClass setSuperClass(ReClass superReClass) {
+    this.superReClass = superReClass;
     return this;
   }
 
@@ -323,8 +504,8 @@ public class ReClass {
 
   public boolean isSubClassOf(ReClass other) {
     // 看链上是否有父类和other类相同
-    for (ReClass spClass = this.superClass; spClass != null; spClass = spClass.superClass) {
-      if (spClass == other) {
+    for (ReClass spReClass = this.superReClass; spReClass != null; spReClass = spReClass.superReClass) {
+      if (spReClass == other) {
         return true;
       }
     }
@@ -345,6 +526,7 @@ public class ReClass {
 
   /**
    * this是other的父类或者接口
+   *
    * @param other
    * @return
    */
@@ -362,11 +544,12 @@ public class ReClass {
 
   /**
    * this implements iface
+   *
    * @param iface
    * @return
    */
   public boolean isImplements(ReClass iface) {
-    for (ReClass c = this; c != null; c = c.superClass) {
+    for (ReClass c = this; c != null; c = c.superReClass) {
       for (ReClass i : c.interfaces) {
         if (i == iface || i.isSubInterfaceOf(iface)) {
           return true;

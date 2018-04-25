@@ -1,5 +1,6 @@
 package com.github.hgaol.reimu.rtda;
 
+
 import com.github.hgaol.reimu.rtda.heap.ReClass;
 
 /**
@@ -69,4 +70,5 @@ public class Frame {
     this.nextPc = pc;
     return this;
   }
+
 }

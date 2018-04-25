@@ -4,6 +4,8 @@ import com.github.hgaol.reimu.classfile.ClassFile;
 import com.github.hgaol.reimu.classfile.ClassFileUtil;
 import com.github.hgaol.reimu.classpath.ClassPath;
 import com.github.hgaol.reimu.rtda.Slots;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,6 +15,9 @@ import java.util.Map;
  * @date: 2018年04月12日
  */
 public class ReClassLoader {
+
+  private static final Logger logger = LoggerFactory.getLogger(ReClassLoader.class);
+
   private ClassPath classPath;
   /**
    * 可以认为简单的方法区，保存已加载的Class
@@ -26,6 +31,7 @@ public class ReClassLoader {
 
   /**
    * 在classpath中读取class信息，并保存在classMap中
+   *
    * @param name 类的全限定名
    * @return
    */
@@ -39,6 +45,7 @@ public class ReClassLoader {
 
   /**
    * <h4>加载非数组类型的类</h4>
+   *
    * @param name Class全限定名
    * @return 解析好的Class对象
    */
@@ -46,7 +53,7 @@ public class ReClassLoader {
     byte[] data = readClass(name);
     ReClass clazz = defineClass(data);
     link(clazz);
-    System.out.printf("[Loaded %s]\n", name);
+    logger.debug("[Loaded class {}]\n", name);
     return clazz;
   }
 
@@ -57,13 +64,14 @@ public class ReClassLoader {
   private byte[] readClass(String name) {
     byte[] data = classPath.readClass(name);
     if (data == null) {
-      throw new Error("java.lang.ClassNotFoundException: " + name);
+      throw new Error("ReClassNotFoundException: " + name);
     }
     return data;
   }
 
   /**
    * 将byte code转换为Class类
+   *
    * @param data class binary data
    * @return
    */
@@ -78,6 +86,7 @@ public class ReClassLoader {
 
   /**
    * 递归加载父类
+   *
    * @param clazz class
    */
   private void resolveSuperClass(ReClass clazz) {
@@ -88,6 +97,7 @@ public class ReClassLoader {
 
   /**
    * 加载接口
+   *
    * @param clazz
    */
   private void resolveInterfaces(ReClass clazz) {
@@ -98,7 +108,6 @@ public class ReClassLoader {
   }
 
   private void link(ReClass clazz) {
-    // TODO
     verify(clazz);
     prepare(clazz);
   }
@@ -109,6 +118,7 @@ public class ReClassLoader {
 
   /**
    * 解析类的实例成员变量、静态成员变量、分配并初始化static final类型的成员变量
+   *
    * @param clazz class
    */
   private void prepare(ReClass clazz) {
@@ -119,6 +129,7 @@ public class ReClassLoader {
 
   /**
    * 计算实例成员变量对应的slotId
+   *
    * @param clazz class
    */
   private void calcInstantceFieldSlotIds(ReClass clazz) {
@@ -141,6 +152,7 @@ public class ReClassLoader {
 
   /**
    * 计算静态成员变量对应的slotId，静态的不需要考虑父类的
+   *
    * @param clazz
    */
   private void calcStaticFieldSlotIds(ReClass clazz) {
@@ -166,6 +178,7 @@ public class ReClassLoader {
 
   /**
    * 设置Class的static final的值，也就是设置{@link ReClass}的staticVars
+   *
    * @param clazz
    * @param field
    */
@@ -179,13 +192,13 @@ public class ReClassLoader {
       switch (field.descriptor) {
         // 基本类型boolean
         case "Z":
-        // 基本类型byte
+          // 基本类型byte
         case "B":
-        // 基本类型char
+          // 基本类型char
         case "C":
-        // 基本类型short
+          // 基本类型short
         case "S":
-        // 基本类型int
+          // 基本类型int
         case "I":
           staticVars.setInt(slotId, (int) cp.getConstant(cpIndex));
           break;
@@ -203,6 +216,8 @@ public class ReClassLoader {
           break;
         // 基本类型float
         case "Ljava/lang/String":
+          throw new Error("todo");
+        default:
           throw new Error("todo");
       }
     }

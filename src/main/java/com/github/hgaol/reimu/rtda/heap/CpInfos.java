@@ -139,6 +139,38 @@ public class CpInfos {
       super(refInfo);
       this.cp = cp;
     }
+
+    /**
+     * 根据name和descriptor以及所在的class找到对应的method
+     * 并检验method是否有权被访问
+     * @return method
+     */
+    public ReClass.Method resolvedMethod() {
+      if (this.method == null) {
+        resolveMethodRef();
+      }
+      return method;
+    }
+
+    // jvms8 5.4.3.3
+    private void resolveMethodRef() {
+      ReClass d = this.cp.getClazz();
+      ReClass c = this.resolvedClass();
+
+      if (c.isInterface()) {
+        throw new Error("java.lang.IncompatibleClassChangeError");
+      }
+      ReClass.Method method = MethodUtils.lookupMethod(c, name, descriptor);
+      if (method == null) {
+        throw new Error("java.lang.NoSuchMethodError");
+      }
+      if (method.isAccessableTo(d)) {
+        throw new Error("java.lang.IllegalAccessError");
+      }
+
+      this.method = method;
+    }
+
   }
 
   public static class InterfaceMethodRef extends MemberRef {
@@ -148,6 +180,35 @@ public class CpInfos {
       super(refInfo);
       this.cp = cp;
     }
+
+    public ReClass.Method resolvedMethod() {
+      if (this.method == null) {
+        resolveInterfaceMethodRef();
+      }
+      return method;
+    }
+
+    /**
+     * 接口的方法没有code的属性吧
+     */
+    private void resolveInterfaceMethodRef() {
+      ReClass d = this.cp.getClazz();
+      ReClass c = this.resolvedClass();
+
+      if (!c.isInterface()) {
+        throw new Error("java.lang.IncompatibleClassChangeError");
+      }
+      ReClass.Method method = MethodUtils.lookupInterfaceMethod(c, name, descriptor);
+      if (method == null) {
+        throw new Error("java.lang.NoSuchMethodError");
+      }
+      if (method.isAccessableTo(d)) {
+        throw new Error("java.lang.IllegalAccessError");
+      }
+
+      this.method = method;
+    }
+
   }
 
 }
