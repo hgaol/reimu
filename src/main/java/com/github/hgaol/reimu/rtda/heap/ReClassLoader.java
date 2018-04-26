@@ -233,7 +233,10 @@ public class ReClassLoader {
           break;
         // String类型
         case "Ljava/lang/String;":
-          throw new Error("todo");
+          String key = (String) cp.getConstant(cpIndex);
+          ReObject reStr = StringPool.getReString(clazz.getLoader(), key);
+          staticVars.setRef(slotId, reStr);
+          break;
         default:
           throw new Error("todo");
       }

@@ -30,4 +30,11 @@ public class ArrayTest {
     invokeTest(args);
   }
 
+  @Test
+  public void stringHelloTest() {
+    String[] args = new String[]
+        {"-cp", "target/test-classes", "com.github.hgaol.reimu.example.HelloWorld"};
+    invokeTest(args);
+  }
+
 }

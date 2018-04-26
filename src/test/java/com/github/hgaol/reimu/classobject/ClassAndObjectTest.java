@@ -7,9 +7,6 @@ import com.github.hgaol.reimu.rtda.heap.ReClass;
 import com.github.hgaol.reimu.rtda.heap.ReClassLoader;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-
-import static org.junit.Assert.*;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -17,10 +14,12 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 /**
  * @author Gao Han
  * @date: 2018年04月24日
- *
  */
 public class ClassAndObjectTest {
 
@@ -47,7 +46,7 @@ public class ClassAndObjectTest {
 
     assertNotNull(mainMethod);
     try {
-      Interpreter.interpret(mainMethod);
+      Interpreter.interpret(mainMethod, args);
     } catch (Exception e) {
       assertEquals(true, true);
     }

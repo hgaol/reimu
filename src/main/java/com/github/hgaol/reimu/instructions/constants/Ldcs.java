@@ -4,7 +4,10 @@ import com.github.hgaol.reimu.instructions.base.Index16Instruction;
 import com.github.hgaol.reimu.instructions.base.Index8Instruction;
 import com.github.hgaol.reimu.rtda.Frame;
 import com.github.hgaol.reimu.rtda.OperandStack;
+import com.github.hgaol.reimu.rtda.heap.ReClass;
+import com.github.hgaol.reimu.rtda.heap.ReObject;
 import com.github.hgaol.reimu.rtda.heap.RtConstantPool;
+import com.github.hgaol.reimu.rtda.heap.StringPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,13 +42,13 @@ public class Ldcs {
       RtConstantPool cp = frame.getMethod().getClazz().getConstantPool();
       Object c = cp.getConstant(index);
 
-      ObjType type = ObjType.valueOf(c.getClass().getSimpleName());
+      String type = c.getClass().getSimpleName();
 //      logger.trace("ldc type: {}", type);
       switch (type) {
-        case Long:
+        case "Long":
           stack.pushLong((long) c);
           break;
-        case Double:
+        case "Double":
           stack.pushDouble((double) c);
           break;
         default:
@@ -56,32 +59,27 @@ public class Ldcs {
 
   public static void _ldc(Frame frame, int index) {
     OperandStack stack = frame.getOperandStack();
-    RtConstantPool cp = frame.getMethod().getClazz().getConstantPool();
-    Object c = cp.getConstant(index);
+    ReClass clazz = frame.getMethod().getClazz();
+    Object c = clazz.getConstantPool().getConstant(index);
 
-    ObjType type = ObjType.valueOf(c.getClass().getSimpleName());
+    String type = c.getClass().getSimpleName();
     switch (type) {
-      case Integer:
+      case "Integer":
         stack.pushInt((int) c);
         break;
-      case Float:
+      case "Float":
         stack.pushFloat((float) c);
         break;
+      case "String":
+        ReObject internedStr = StringPool.getReString(clazz.getLoader(), (String) c);
+        stack.pushRef(internedStr);
+        break;
       // todo
-//      case String:
 //      case ClassRef:
       default:
         throw new Error("todo: ldc");
     }
   }
 
-  enum ObjType {
-    Integer,
-    Float,
-    Long,
-    Double,
-    String,
-    ClassRef
-  }
 
 }

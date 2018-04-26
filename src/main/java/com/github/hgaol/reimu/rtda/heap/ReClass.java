@@ -716,5 +716,21 @@ public class ReClass {
   public boolean isJioSerializable() {
     return name.endsWith("java/io/Serializable");
   }
+
+  public Field getField(String name, String descriptor, boolean isStatic) {
+    for (ReClass c = this; c != null; c = c.getSuperClass()) {
+      for (Field field : c.getFields()) {
+        if (field.isStatic() == isStatic &&
+            field.name.equals(name) &&
+            field.descriptor.equals(descriptor)) {
+
+          return field;
+        }
+      }
+    }
+
+    return null;
+  }
+
 }
 

@@ -35,8 +35,9 @@ public class CommonUtils {
 
     assertNotNull(mainMethod);
     try {
-      Interpreter.interpret(mainMethod);
+      Interpreter.interpret(mainMethod, cmd.args);
     } catch (Exception e) {
+      logger.error(e.getMessage(), e);
       assertEquals(true, true);
     }
   }

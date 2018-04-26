@@ -4,7 +4,11 @@ import com.github.hgaol.reimu.classpath.ClassPath;
 import com.github.hgaol.reimu.cmd.CmdInfo;
 import com.github.hgaol.reimu.rtda.heap.ReClass;
 import com.github.hgaol.reimu.rtda.heap.ReClassLoader;
-import com.github.hgaol.reimu.util.EchoUtils;
+import com.github.hgaol.reimu.util.VMUtils;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 
@@ -13,8 +17,11 @@ import java.util.Arrays;
  */
 public class ClassParser {
 
+  private static final Logger logger = LoggerFactory.getLogger(ClassParser.class);
+
   public static void main(String[] args) {
     CmdInfo cmd = new CmdInfo(args);
+    init();
     if (cmd.version) {
       cmd.printVersion();
     } else if (cmd.help) {
@@ -27,7 +34,7 @@ public class ClassParser {
   public static void startJVM(CmdInfo cmd) {
     // 1. 创建classpath对象
     ClassPath classPath = new ClassPath(cmd.xjre, cmd.cp);
-    EchoUtils.echof("classpath: %s, class: %s, args: %s\n", classPath, cmd.cls, Arrays.toString(cmd.args));
+    logger.debug("\n\tclasspath: {}, class: {}, args: {}\n", ToStringBuilder.reflectionToString(classPath, ToStringStyle.MULTI_LINE_STYLE), cmd.cls, Arrays.toString(cmd.args));
     // 2. 读取文件
     ReClassLoader loader = new ReClassLoader(classPath);
     // zip获取的文件名都是/为分隔符
@@ -38,8 +45,12 @@ public class ClassParser {
     if (mainMethod == null) {
       System.err.printf("Main method not found in class %s\n", cmd.cls);
     } else {
-      Interpreter.interpret(mainMethod);
+      Interpreter.interpret(mainMethod, cmd.args);
     }
+  }
+
+  private static void init() {
+    ToStringBuilder.setDefaultStyle(new VMUtils.ReimuToStringStyle());
   }
 
 }

@@ -60,7 +60,7 @@ public class ReObject {
       case "[D":
         return new ReObject(clazz, new double[count]);
       default:
-        return new ReObject(clazz, new Object[count]);
+        return new ReObject(clazz, new ReObject[count]);
     }
   }
 
@@ -94,6 +94,18 @@ public class ReObject {
 
   public ReObject[] getRefs() {
     return (ReObject[]) this.data;
+  }
+
+  public ReObject getRefVar(String name, String descriptor) {
+    ReClass.Field field = this.clazz.getField(name, descriptor, false);
+    Slots slots = (Slots) this.data;
+    return slots.getRef(field.slotId);
+  }
+
+  public void setRefVar(String name, String descriptor, ReObject ref) {
+    ReClass.Field field = this.clazz.getField(name, descriptor, false);
+    Slots slots = (Slots) this.data;
+    slots.setRef(field.slotId, ref);
   }
 
   public int getArrayLenth() {
