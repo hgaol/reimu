@@ -31,6 +31,7 @@ public class InvokeVirtual extends Index16Instruction {
       // todo: hack
       if (methodRef.getName().equals("println")) {
         _println(frame.getOperandStack(), methodRef.getDescriptor());
+        return;
       }
       throw new Error("java.lang.NullPointerException");
     }

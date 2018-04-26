@@ -1,5 +1,6 @@
 package com.github.hgaol.reimu.instructions.references;
 
+import com.github.hgaol.reimu.instructions.base.ClassInitLogic;
 import com.github.hgaol.reimu.instructions.base.Index16Instruction;
 import com.github.hgaol.reimu.rtda.Frame;
 import com.github.hgaol.reimu.rtda.heap.CpInfos;
@@ -25,7 +26,11 @@ public class InvokeStatic extends Index16Instruction {
     }
 
     ReClass clazz = resolvedMethod.getClazz();
-    // todo: init class
+    if (!clazz.isInitStarted()) {
+      frame.revertNextPc();
+      ClassInitLogic.initClass(frame.getThread(), clazz);
+      return;
+    }
 
     MethodUtils.invokeMethod(frame, resolvedMethod);
   }

@@ -71,4 +71,8 @@ public class Frame {
     return this;
   }
 
+  public void revertNextPc() {
+    this.nextPc = this.thread.getPc();
+  }
+
 }

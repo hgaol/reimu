@@ -32,6 +32,8 @@ public class ReClass {
   private int instanceSlotCount;
   private int staticSlotCount;
   private Slots staticVars;
+  // 是否已经初始化
+  private boolean initStarted;
 
   public ReClass(ClassFile cf) {
     this.accessFlags = cf.accessFlags;
@@ -73,6 +75,10 @@ public class ReClass {
 
   public Method getMainMethod() {
     return this.getStaticMethod("main", "([Ljava/lang/String;)V");
+  }
+
+  public Method getClinitMethod() {
+    return this.getStaticMethod("<clinit>", "()V");
   }
 
   public Method getStaticMethod(String name, String descriptor) {
@@ -606,6 +612,14 @@ public class ReClass {
 
   public boolean isEnum() {
     return 0 != (this.accessFlags & AccessFlags.ACC_ENUM);
+  }
+
+  public boolean isInitStarted() {
+    return initStarted;
+  }
+
+  public void startInit() {
+    this.initStarted = true;
   }
 
 }

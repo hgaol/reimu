@@ -1,11 +1,12 @@
 package com.github.hgaol.reimu.instructions.references;
 
+import com.github.hgaol.reimu.instructions.base.ClassInitLogic;
 import com.github.hgaol.reimu.instructions.base.Index16Instruction;
 import com.github.hgaol.reimu.rtda.Frame;
 import com.github.hgaol.reimu.rtda.OperandStack;
 import com.github.hgaol.reimu.rtda.Slots;
-import com.github.hgaol.reimu.rtda.heap.ReClass;
 import com.github.hgaol.reimu.rtda.heap.CpInfos;
+import com.github.hgaol.reimu.rtda.heap.ReClass;
 import com.github.hgaol.reimu.rtda.heap.RtConstantPool;
 
 /**
@@ -19,26 +20,30 @@ public class PutStatic extends Index16Instruction {
   @Override
   public void execute(Frame frame) {
     ReClass.Method curMethod = frame.getMethod();
-    ReClass curClass = curMethod.getClazz();
-    RtConstantPool cp = curClass.getConstantPool();
+    ReClass curReClass = curMethod.getClazz();
+    RtConstantPool cp = curReClass.getConstantPool();
     CpInfos.FieldRef fieldRef = (CpInfos.FieldRef) cp.getConstant(index);
     ReClass.Field field = fieldRef.resolvedField();
-    ReClass fieldClass = field.getClazz();
-    // todo: init class
+    ReClass clazz = field.getClazz();
+    if (!clazz.isInitStarted()) {
+      frame.revertNextPc();
+      ClassInitLogic.initClass(frame.getThread(), clazz);
+      return;
+    }
 
     if (!field.isStatic()) {
       throw new Error("java.lang.IncompatibleClassChangeError");
     }
     // 如果是final字段，需在类初始化中给它赋值
     if (field.isFinal()) {
-      if (curClass != fieldClass || !curMethod.getName().equals("<clinit>")) {
+      if (curReClass != clazz || !curMethod.getName().equals("<clinit>")) {
         throw new Error("java.lang.IllegalAccessError");
       }
     }
 
     String descriptor = field.getDescriptor();
     int slotId = field.getSlotId();
-    Slots slots = fieldClass.getStaticVars();
+    Slots slots = clazz.getStaticVars();
     OperandStack stack = frame.getOperandStack();
 
     switch (descriptor.charAt(0)) {
@@ -61,6 +66,8 @@ public class PutStatic extends Index16Instruction {
       case 'L':
         slots.setRef(slotId, stack.popRef());
         break;
+      default:
+        // todo
     }
   }
 }

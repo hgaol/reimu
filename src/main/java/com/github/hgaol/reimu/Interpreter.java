@@ -49,7 +49,7 @@ public class Interpreter {
       frame.setNextPc(reader.getPc());
 
       // execute
-      logger.debug("class: {} method: {} pc: #{} inst: {} {} \n\tlocal-vars: {}, \n\toperand-stack: {}\n",
+      logger.debug("\n{}.{} #{} inst: {} {} \n\tlocal-vars: {}, \n\toperand-stack: {}\n",
           frame.getMethod().getClazz().getName(),
           frame.getMethod().getName(),
           pc, inst.getClass().getSimpleName(),

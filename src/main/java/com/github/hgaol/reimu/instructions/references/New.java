@@ -1,9 +1,10 @@
 package com.github.hgaol.reimu.instructions.references;
 
+import com.github.hgaol.reimu.instructions.base.ClassInitLogic;
 import com.github.hgaol.reimu.instructions.base.Index16Instruction;
 import com.github.hgaol.reimu.rtda.Frame;
-import com.github.hgaol.reimu.rtda.heap.ReClass;
 import com.github.hgaol.reimu.rtda.heap.CpInfos;
+import com.github.hgaol.reimu.rtda.heap.ReClass;
 import com.github.hgaol.reimu.rtda.heap.ReObject;
 import com.github.hgaol.reimu.rtda.heap.RtConstantPool;
 
@@ -20,6 +21,11 @@ public class New extends Index16Instruction {
     CpInfos.ClassRef classRef = (CpInfos.ClassRef) cp.getConstant(index);
     ReClass clazz = classRef.resolvedClass();
     // todo: init class
+    if (!clazz.isInitStarted()) {
+      frame.revertNextPc();
+      ClassInitLogic.initClass(frame.getThread(), clazz);
+      return;
+    }
 
     if (clazz.isInterface() || clazz.isAbstract()) {
       throw new Error("java.lang.InstantiationError");
@@ -29,3 +35,4 @@ public class New extends Index16Instruction {
     frame.getOperandStack().pushRef(ref);
   }
 }
+

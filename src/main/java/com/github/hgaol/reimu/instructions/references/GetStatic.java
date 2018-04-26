@@ -1,11 +1,13 @@
 package com.github.hgaol.reimu.instructions.references;
 
+import com.github.hgaol.reimu.instructions.base.ClassInitLogic;
 import com.github.hgaol.reimu.instructions.base.Index16Instruction;
+import com.github.hgaol.reimu.rtda.Thread;
 import com.github.hgaol.reimu.rtda.Frame;
 import com.github.hgaol.reimu.rtda.OperandStack;
 import com.github.hgaol.reimu.rtda.Slots;
-import com.github.hgaol.reimu.rtda.heap.ReClass;
 import com.github.hgaol.reimu.rtda.heap.CpInfos;
+import com.github.hgaol.reimu.rtda.heap.ReClass;
 import com.github.hgaol.reimu.rtda.heap.RtConstantPool;
 
 /**
@@ -20,8 +22,12 @@ public class GetStatic extends Index16Instruction {
     RtConstantPool cp = frame.getMethod().getClazz().getConstantPool();
     CpInfos.FieldRef fieldRef = (CpInfos.FieldRef) cp.getConstant(index);
     ReClass.Field field = fieldRef.resolvedField();
-    ReClass fieldClass = field.getClazz();
-    // todo: init class
+    ReClass clazz = field.getClazz();
+    if (!clazz.isInitStarted()) {
+      frame.revertNextPc();
+      ClassInitLogic.initClass(frame.getThread(), clazz);
+      return;
+    }
 
     if (!field.isStatic()) {
       throw new Error("java.lang.IncompatibleClassChangeError");
@@ -29,7 +35,7 @@ public class GetStatic extends Index16Instruction {
 
     String descriptor = field.getDescriptor();
     int slotId = field.getSlotId();
-    Slots slots = fieldClass.getStaticVars();
+    Slots slots = clazz.getStaticVars();
     OperandStack stack = frame.getOperandStack();
 
     switch (descriptor.charAt(0)) {
@@ -52,6 +58,8 @@ public class GetStatic extends Index16Instruction {
       case 'L':
         stack.pushRef(slots.getRef(slotId));
         break;
+      default:
+        // todo
     }
   }
 }

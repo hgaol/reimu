@@ -5,6 +5,8 @@ import com.github.hgaol.reimu.instructions.base.Index8Instruction;
 import com.github.hgaol.reimu.rtda.Frame;
 import com.github.hgaol.reimu.rtda.OperandStack;
 import com.github.hgaol.reimu.rtda.heap.RtConstantPool;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 从运行时常量池中加载常量值，并把它推入操作数栈
@@ -13,6 +15,9 @@ import com.github.hgaol.reimu.rtda.heap.RtConstantPool;
  * @date: 2018年04月23日
  */
 public class Ldcs {
+
+  private static final Logger logger = LoggerFactory.getLogger(Ldcs.class);
+
   public static class Ldc extends Index8Instruction {
     @Override
     public void execute(Frame frame) {
@@ -35,6 +40,7 @@ public class Ldcs {
       Object c = cp.getConstant(index);
 
       ObjType type = ObjType.valueOf(c.getClass().getSimpleName());
+//      logger.trace("ldc type: {}", type);
       switch (type) {
         case Long:
           stack.pushLong((long) c);
@@ -58,8 +64,8 @@ public class Ldcs {
       case Integer:
         stack.pushInt((int) c);
         break;
-      case Long:
-        stack.pushLong((long) c);
+      case Float:
+        stack.pushFloat((float) c);
         break;
       // todo
 //      case String:
@@ -71,6 +77,7 @@ public class Ldcs {
 
   enum ObjType {
     Integer,
+    Float,
     Long,
     Double,
     String,

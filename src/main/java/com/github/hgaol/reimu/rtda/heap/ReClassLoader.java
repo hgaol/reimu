@@ -211,12 +211,12 @@ public class ReClassLoader {
         case "F":
           staticVars.setFloat(slotId, (float) cp.getConstant(cpIndex));
           break;
-        // 基本类型float
+        // 基本类型double
         case "D":
           staticVars.setDouble(slotId, (double) cp.getConstant(cpIndex));
           break;
-        // 基本类型float
-        case "Ljava/lang/String":
+        // String类型
+        case "Ljava/lang/String;":
           throw new Error("todo");
         default:
           throw new Error("todo");
