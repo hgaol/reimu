@@ -40,7 +40,23 @@ public class ReClassLoader {
     if (clazz != null) {
       return clazz;
     }
+    // 加载数组类
+    if (name.charAt(0) == '[') {
+      return loadArrayClass(name);
+    }
     return loadNonArrayClass(name);
+  }
+
+  private ReClass loadArrayClass(String name) {
+    ReClass arrayClass = new ReClass();
+    arrayClass.setAccessFlags(AccessFlags.ACC_PUBLIC)
+        .setName(name)
+        .setLoader(this)
+        .setInitStarted(true)
+        .setSuperClass(loadClass("java/lang/Object"))
+        .setInterfaces(new ReClass[]{loadClass("java/lang/Cloneable"), loadClass("java/io/Serializable")});
+    this.classMap.put(name, arrayClass);
+    return arrayClass;
   }
 
   /**

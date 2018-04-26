@@ -67,6 +67,14 @@ public class InstructionFactory {
   private static Instruction ALoad1 = new ALoads.ALoad1();
   private static Instruction ALoad2 = new ALoads.ALoad2();
   private static Instruction ALoad3 = new ALoads.ALoad3();
+  private static Instruction IALoad = new XAloads.IAload();
+  private static Instruction LALoad = new XAloads.LAload();
+  private static Instruction FALoad = new XAloads.FAload();
+  private static Instruction DALoad = new XAloads.DAload();
+  private static Instruction AALoad = new XAloads.AAload();
+  private static Instruction BALoad = new XAloads.BAload();
+  private static Instruction CALoad = new XAloads.CAload();
+  private static Instruction SALoad = new XAloads.SAload();
 
   private static Instruction IStore0 = new IStores.IStore0();
   private static Instruction IStore1 = new IStores.IStore1();
@@ -88,6 +96,14 @@ public class InstructionFactory {
   private static Instruction AStore1 = new AStores.AStore1();
   private static Instruction AStore2 = new AStores.AStore2();
   private static Instruction AStore3 = new AStores.AStore3();
+  private static Instruction IAStore = new XAStore.IAStore();
+  private static Instruction LAStore = new XAStore.LAStore();
+  private static Instruction FAStore = new XAStore.FAStore();
+  private static Instruction DAStore = new XAStore.DAStore();
+  private static Instruction AAStore = new XAStore.AAStore();
+  private static Instruction BAStore = new XAStore.BAStore();
+  private static Instruction CAStore = new XAStore.CAStore();
+  private static Instruction SAStore = new XAStore.SAStore();
 
   private static Instruction Pop = new Pops.Pop();
   private static Instruction Pop2 = new Pops.Pop2();
@@ -167,6 +183,7 @@ public class InstructionFactory {
   private static Instruction LReturn = new Returns.LReturn();
   private static Instruction AReturn = new Returns.AReturn();
 
+  private static Instruction ArrayLength = new ArrayLength();
 
   public static Instruction newInstruction(byte opcode) {
     int code = Byte.toUnsignedInt(opcode);
@@ -264,22 +281,22 @@ public class InstructionFactory {
         return ALoad2;
       case 0x2d:
         return ALoad3;
-      // case 0x2e:
-      // 	return iaload
-      // case 0x2f:
-      // 	return laload
-      // case 0x30:
-      // 	return faload
-      // case 0x31:
-      // 	return daload
-      // case 0x32:
-      // 	return aaload
-      // case 0x33:
-      // 	return baload
-      // case 0x34:
-      // 	return caload
-      // case 0x35:
-      // 	return saload
+       case 0x2e:
+       	return IALoad;
+       case 0x2f:
+       	return LALoad;
+       case 0x30:
+       	return FALoad;
+       case 0x31:
+       	return DALoad;
+       case 0x32:
+       	return AALoad;
+       case 0x33:
+       	return BALoad;
+       case 0x34:
+       	return CALoad;
+       case 0x35:
+       	return SALoad;
       case 0x36:
         return new IStores.IStore();
       case 0x37:
@@ -330,22 +347,22 @@ public class InstructionFactory {
         return AStore2;
       case 0x4e:
         return AStore3;
-      // case 0x4f:
-      // 	return iastore
-      // case 0x50:
-      // 	return lastore
-      // case 0x51:
-      // 	return fastore
-      // case 0x52:
-      // 	return dastore
-      // case 0x53:
-      // 	return aastore
-      // case 0x54:
-      // 	return bastore
-      // case 0x55:
-      // 	return castore
-      // case 0x56:
-      // 	return sastore
+       case 0x4f:
+       	return IAStore;
+       case 0x50:
+       	return LAStore;
+       case 0x51:
+       	return FAStore;
+       case 0x52:
+       	return DAStore;
+       case 0x53:
+       	return AAStore;
+       case 0x54:
+       	return BAStore;
+       case 0x55:
+       	return CAStore;
+       case 0x56:
+       	return SAStore;
       case 0x57:
         return Pop;
       case 0x58:
@@ -548,12 +565,12 @@ public class InstructionFactory {
       // 	return &INVOKE_DYNAMIC{}
       case 0xbb:
         return new New();
-      // case 0xbc:
-      // 	return &NEW_ARRAY{}
-      // case 0xbd:
-      // 	return &ANEW_ARRAY{}
-      // case 0xbe:
-      // 	return arraylength
+       case 0xbc:
+       	return new NewArray();
+       case 0xbd:
+       	return new ANewArray();
+       case 0xbe:
+       	return ArrayLength;
       // case 0xbf:
       // 	return athrow
       case 0xc0:
@@ -566,8 +583,8 @@ public class InstructionFactory {
       // 	return monitorexit
       case 0xc4:
         return new Extends.Wide();
-      // case 0xc5:
-      // 	return &MULTI_ANEW_ARRAY{}
+       case 0xc5:
+       	return new MultiANewArray();
       case 0xc6:
         return new Extends.IfNull();
       case 0xc7:

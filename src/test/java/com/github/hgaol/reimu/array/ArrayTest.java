@@ -1,5 +1,6 @@
-package com.github.hgaol.reimu.invokemethod;
+package com.github.hgaol.reimu.array;
 
+import com.github.hgaol.reimu.invokemethod.InvokeMethodTest;
 import com.github.hgaol.reimu.util.VMUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.junit.Before;
@@ -11,9 +12,9 @@ import static com.github.hgaol.reimu.CommonUtils.invokeTest;
 
 /**
  * @author Gao Han
- * @date: 2018年04月25日
+ * @date: 2018年04月26日
  */
-public class InvokeMethodTest {
+public class ArrayTest {
 
   private static final Logger logger = LoggerFactory.getLogger(InvokeMethodTest.class);
 
@@ -23,18 +24,10 @@ public class InvokeMethodTest {
   }
 
   @Test
-  public void invokeDemoTest() {
+  public void arrayTest() {
     String[] args = new String[]
-        {"-cp", "target/test-classes", "com.github.hgaol.reimu.example.InvokeDemo"};
+        {"-cp", "target/test-classes", "com.github.hgaol.reimu.example.BubbleSort"};
     invokeTest(args);
   }
-
-  @Test
-  public void invokeFibonacciTest() {
-    String[] args = new String[]
-        {"-cp", "target/test-classes", "com.github.hgaol.reimu.example.FibonacciTest"};
-    invokeTest(args);
-  }
-
 
 }

@@ -5,6 +5,7 @@ import com.github.hgaol.reimu.classfile.MemberInfo;
 import com.github.hgaol.reimu.classfile.attribute.CodeAttribute;
 import com.github.hgaol.reimu.classfile.attribute.ConstantValueAttribute;
 import com.github.hgaol.reimu.rtda.Slots;
+import com.github.hgaol.reimu.util.ClassNameUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +35,9 @@ public class ReClass {
   private Slots staticVars;
   // 是否已经初始化
   private boolean initStarted;
+
+  public ReClass() {
+  }
 
   public ReClass(ClassFile cf) {
     this.accessFlags = cf.accessFlags;
@@ -70,7 +74,11 @@ public class ReClass {
   }
 
   public ReObject newObject() {
-    return new ReObject(this);
+    return ReObject.newObject(this);
+  }
+
+  public ReObject newArray(int count) {
+    return ReObject.newArray(this, count);
   }
 
   public Method getMainMethod() {
@@ -191,6 +199,7 @@ public class ReClass {
 
       /**
        * 解析参数类型，并设置offset
+       *
        * @return
        */
       private String parseFieldType() {
@@ -280,6 +289,7 @@ public class ReClass {
 
       /**
        * 解析对象类型, example: Ljava/lang/String;
+       *
        * @return example: Ljava/lang/String;
        */
       private String parseObjectType() {
@@ -298,6 +308,7 @@ public class ReClass {
 
       /**
        * 解析数组类型，example: [Ljava/lang/String;
+       *
        * @return example: [Ljava/lang/String;
        */
       private String parseArrayType() {
@@ -391,6 +402,16 @@ public class ReClass {
 
   public ReClass setAccessFlags(int accessFlags) {
     this.accessFlags = accessFlags;
+    return this;
+  }
+
+  public ReClass setSuperReClass(ReClass superReClass) {
+    this.superReClass = superReClass;
+    return this;
+  }
+
+  public ReClass setInitStarted(boolean initStarted) {
+    this.initStarted = initStarted;
     return this;
   }
 
@@ -539,21 +560,60 @@ public class ReClass {
   }
 
   /**
+   * if (!array)
+   * <p>
    * this是other的父类或者接口
+   * </p>
+   * if (array)
    *
    * @param other
    * @return
    */
   public boolean isAssignableFrom(ReClass other) {
-    if (this == other) {
+    ReClass s = other;
+    ReClass t = this;
+
+    if (s == t) {
       return true;
     }
 
-    if (this.isInterface()) {
-      return other.isImplements(this);
+    if (!s.isArray()) {
+      if (!s.isInterface()) {
+        // s is class
+        if (!t.isInterface()) {
+          // t is not interface
+          return s.isSubClassOf(t);
+        } else {
+          // t is interface
+          return s.isImplements(t);
+        }
+      } else {
+        // s is interface
+        if (!t.isInterface()) {
+          // t is not interface
+          return t.isJlObject();
+        } else {
+          // t is interface
+          return t.isSuperInterfaceOf(s);
+        }
+      }
     } else {
-      return other.isSubClassOf(this);
+      // s is array
+      if (!t.isArray()) {
+        if (!t.isInterface()) {
+          // t is class
+          return t.isJlObject();
+        } else {
+          return t.isJlCloneable() || t.isJioSerializable();
+        }
+      } else {
+        // t is array
+        ReClass sc = s.componentClass();
+        ReClass tc = t.componentClass();
+        return tc.isAssignableFrom(sc);
+      }
     }
+
   }
 
   /**
@@ -580,6 +640,10 @@ public class ReClass {
       }
     }
     return false;
+  }
+
+  public boolean isSuperInterfaceOf(ReClass iface) {
+    return iface.isSubInterfaceOf(this);
   }
 
   public boolean isPublic() {
@@ -618,9 +682,39 @@ public class ReClass {
     return initStarted;
   }
 
+  public boolean isArray() {
+    return this.name.charAt(0) == '[';
+  }
+
   public void startInit() {
     this.initStarted = true;
   }
 
+  public ReClass getArrayClass() {
+    String arrayClassName = ClassNameUtils.getArrayClassName(name);
+    return this.loader.loadClass(arrayClassName);
+  }
+
+  /**
+   * 针对数组类，example: [[I -> [I
+   *
+   * @return new class
+   */
+  public ReClass componentClass() {
+    String componentClassName = ClassNameUtils.getComponentClassName(name);
+    return loader.loadClass(componentClassName);
+  }
+
+  public boolean isJlObject() {
+    return name.endsWith("java/lang/Object");
+  }
+
+  public boolean isJlCloneable() {
+    return name.endsWith("java/lang/Cloneable");
+  }
+
+  public boolean isJioSerializable() {
+    return name.endsWith("java/io/Serializable");
+  }
 }
 
