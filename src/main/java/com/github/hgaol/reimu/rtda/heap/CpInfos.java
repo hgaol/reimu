@@ -2,6 +2,7 @@ package com.github.hgaol.reimu.rtda.heap;
 
 import com.github.hgaol.reimu.classfile.constants.ConstantClassInfo;
 import com.github.hgaol.reimu.classfile.constants.ConstantMemberrefInfo;
+import com.github.hgaol.reimu.util.MethodUtils;
 
 /**
  * @author Gao Han

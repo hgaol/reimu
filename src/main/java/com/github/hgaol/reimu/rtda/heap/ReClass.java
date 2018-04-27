@@ -6,6 +6,7 @@ import com.github.hgaol.reimu.classfile.attribute.CodeAttribute;
 import com.github.hgaol.reimu.classfile.attribute.ConstantValueAttribute;
 import com.github.hgaol.reimu.rtda.Slots;
 import com.github.hgaol.reimu.util.ClassNameUtils;
+import com.github.hgaol.reimu.util.MethodUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +36,8 @@ public class ReClass {
   private Slots staticVars;
   // 是否已经初始化
   private boolean initStarted;
+  // 类对象, ex: String.class "abc".getClass()
+  private ReObject jClass;
 
   public ReClass() {
   }
@@ -328,15 +331,51 @@ public class ReClass {
       this.clazz = clazz;
       this.copyMemberInfo(cfField);
       this.copyAttributes(cfField);
-      this.calcArgsSlotCount();
+      MethodDescriptor md = MethodUtils.parseMethodDescriptor(descriptor);
+      this.calcArgsSlotCount(md);
+      if (this.isNative()) {
+        // 解析类的时候（解析完后会放入方法区，即classMap），会判断如果是本地方法，则手动注入指令码和返回码
+        // 执行字节码的时候，解析到调用该方法时，会走入0xfe对应的invoke_native操作中，然后在native_method_pool中查找方法并执行
+        // 执行完本地方法(0xfe指令)后，根据返回码执行对应的返回操作
+        injectCodeAttribute(md.returnType);
+      }
+    }
+
+    /**
+     * 如果是本地方法，手动注入code attribute
+     * @param returnType method return type
+     */
+    private void injectCodeAttribute(String returnType) {
+      this.maxStack = 4;
+      this.maxLocals = this.argslotCount;
+      switch (returnType.charAt(0)) {
+        case 'V':
+          this.code = new byte[]{(byte) 0xfe, (byte) 0xb1};
+          break;
+        case 'L':
+        case '[':
+          this.code = new byte[]{(byte) 0xfe, (byte) 0xb0};
+          break;
+        case 'D':
+          this.code = new byte[]{(byte) 0xfe, (byte) 0xaf};
+          break;
+        case 'F':
+          this.code = new byte[]{(byte) 0xfe, (byte) 0xae};
+          break;
+        case 'J':
+          this.code = new byte[]{(byte) 0xfe, (byte) 0xad};
+          break;
+        default:
+          this.code = new byte[]{(byte) 0xfe, (byte) 0xac};
+          break;
+      }
     }
 
     /**
      * 计算方法参数个数，long和double个数++
      */
-    public void calcArgsSlotCount() {
-      MethodDescriptor parsedDescriptor = MethodUtils.parseMethodDescriptor(descriptor);
-      for (String paramType : parsedDescriptor.parameterTypes) {
+    public void calcArgsSlotCount(MethodDescriptor md) {
+      for (String paramType : md.parameterTypes) {
         argslotCount++;
         // long and double ++
         if (paramType.equals("J") || paramType.equals("D")) {
@@ -417,6 +456,10 @@ public class ReClass {
 
   public String getName() {
     return name;
+  }
+
+  public String getJavaName() {
+    return name.replace('/', '.');
   }
 
   public ReClass setName(String name) {
@@ -646,6 +689,10 @@ public class ReClass {
     return iface.isSubInterfaceOf(this);
   }
 
+  public boolean isPrimitive() {
+    return null != ClassNameUtils.primitiveTypes.get(this.name);
+  }
+
   public boolean isPublic() {
     return 0 != (this.accessFlags & AccessFlags.ACC_PUBLIC);
   }
@@ -732,5 +779,13 @@ public class ReClass {
     return null;
   }
 
+  public ReObject getjClass() {
+    return jClass;
+  }
+
+  public ReClass setjClass(ReObject jClass) {
+    this.jClass = jClass;
+    return this;
+  }
 }
 

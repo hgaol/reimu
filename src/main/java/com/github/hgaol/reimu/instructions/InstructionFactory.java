@@ -18,6 +18,7 @@ import com.github.hgaol.reimu.instructions.extended.Extends;
 import com.github.hgaol.reimu.instructions.loads.*;
 import com.github.hgaol.reimu.instructions.math.*;
 import com.github.hgaol.reimu.instructions.references.*;
+import com.github.hgaol.reimu.instructions.reserved.InvokeNative;
 import com.github.hgaol.reimu.instructions.stack.Dups;
 import com.github.hgaol.reimu.instructions.stack.Pops;
 import com.github.hgaol.reimu.instructions.stack.Swaps;
@@ -185,6 +186,8 @@ public class InstructionFactory {
 
   private static Instruction ArrayLength = new ArrayLength();
 
+  private static Instruction InvokeNative = new InvokeNative();
+
   public static Instruction newInstruction(byte opcode) {
     int code = Byte.toUnsignedInt(opcode);
 
@@ -281,22 +284,22 @@ public class InstructionFactory {
         return ALoad2;
       case 0x2d:
         return ALoad3;
-       case 0x2e:
-       	return IALoad;
-       case 0x2f:
-       	return LALoad;
-       case 0x30:
-       	return FALoad;
-       case 0x31:
-       	return DALoad;
-       case 0x32:
-       	return AALoad;
-       case 0x33:
-       	return BALoad;
-       case 0x34:
-       	return CALoad;
-       case 0x35:
-       	return SALoad;
+      case 0x2e:
+        return IALoad;
+      case 0x2f:
+        return LALoad;
+      case 0x30:
+        return FALoad;
+      case 0x31:
+        return DALoad;
+      case 0x32:
+        return AALoad;
+      case 0x33:
+        return BALoad;
+      case 0x34:
+        return CALoad;
+      case 0x35:
+        return SALoad;
       case 0x36:
         return new IStores.IStore();
       case 0x37:
@@ -347,22 +350,22 @@ public class InstructionFactory {
         return AStore2;
       case 0x4e:
         return AStore3;
-       case 0x4f:
-       	return IAStore;
-       case 0x50:
-       	return LAStore;
-       case 0x51:
-       	return FAStore;
-       case 0x52:
-       	return DAStore;
-       case 0x53:
-       	return AAStore;
-       case 0x54:
-       	return BAStore;
-       case 0x55:
-       	return CAStore;
-       case 0x56:
-       	return SAStore;
+      case 0x4f:
+        return IAStore;
+      case 0x50:
+        return LAStore;
+      case 0x51:
+        return FAStore;
+      case 0x52:
+        return DAStore;
+      case 0x53:
+        return AAStore;
+      case 0x54:
+        return BAStore;
+      case 0x55:
+        return CAStore;
+      case 0x56:
+        return SAStore;
       case 0x57:
         return Pop;
       case 0x58:
@@ -533,18 +536,18 @@ public class InstructionFactory {
         return new Controls.TableSwitch();
       case 0xab:
         return new Controls.LookupSwitch();
-       case 0xac:
-       	return IReturn;
-       case 0xad:
-       	return LReturn;
-       case 0xae:
-       	return FReturn;
-       case 0xaf:
-       	return DReturn;
-       case 0xb0:
-       	return AReturn;
-       case 0xb1:
-       	return Return;
+      case 0xac:
+        return IReturn;
+      case 0xad:
+        return LReturn;
+      case 0xae:
+        return FReturn;
+      case 0xaf:
+        return DReturn;
+      case 0xb0:
+        return AReturn;
+      case 0xb1:
+        return Return;
       case 0xb2:
         return new GetStatic();
       case 0xb3:
@@ -557,20 +560,20 @@ public class InstructionFactory {
         return new InvokeVirtual();
       case 0xb7:
         return new InvokeSpecial();
-       case 0xb8:
-       	return new InvokeStatic();
-       case 0xb9:
-       	return new InvokeInterface();
+      case 0xb8:
+        return new InvokeStatic();
+      case 0xb9:
+        return new InvokeInterface();
       // case 0xba:
       // 	return &INVOKE_DYNAMIC{}
       case 0xbb:
         return new New();
-       case 0xbc:
-       	return new NewArray();
-       case 0xbd:
-       	return new ANewArray();
-       case 0xbe:
-       	return ArrayLength;
+      case 0xbc:
+        return new NewArray();
+      case 0xbd:
+        return new ANewArray();
+      case 0xbe:
+        return ArrayLength;
       // case 0xbf:
       // 	return athrow
       case 0xc0:
@@ -583,8 +586,8 @@ public class InstructionFactory {
       // 	return monitorexit
       case 0xc4:
         return new Extends.Wide();
-       case 0xc5:
-       	return new MultiANewArray();
+      case 0xc5:
+        return new MultiANewArray();
       case 0xc6:
         return new Extends.IfNull();
       case 0xc7:
@@ -594,7 +597,8 @@ public class InstructionFactory {
       // case 0xc9:
       // 	return &JSR_W{}
       // case 0xca: breakpoint
-      // case 0xfe: impdep1
+      case 0xfe:
+        return InvokeNative;
       // case 0xff: impdep2
       default:
         unsupport(code);

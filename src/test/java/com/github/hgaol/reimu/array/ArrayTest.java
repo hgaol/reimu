@@ -4,6 +4,7 @@ import com.github.hgaol.reimu.invokemethod.InvokeMethodTest;
 import com.github.hgaol.reimu.util.VMUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

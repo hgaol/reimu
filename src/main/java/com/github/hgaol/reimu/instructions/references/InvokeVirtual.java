@@ -4,6 +4,7 @@ import com.github.hgaol.reimu.instructions.base.Index16Instruction;
 import com.github.hgaol.reimu.rtda.Frame;
 import com.github.hgaol.reimu.rtda.OperandStack;
 import com.github.hgaol.reimu.rtda.heap.*;
+import com.github.hgaol.reimu.util.MethodUtils;
 
 /**
  * 需要动态绑定的方法，针对非接口类型的调用方法

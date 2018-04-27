@@ -1,9 +1,12 @@
-package com.github.hgaol.reimu.rtda.heap;
+package com.github.hgaol.reimu.util;
 
-import com.github.hgaol.reimu.rtda.Thread;
 import com.github.hgaol.reimu.rtda.Frame;
+import com.github.hgaol.reimu.rtda.Thread;
 import com.github.hgaol.reimu.rtda.Slot;
-import org.apache.commons.lang3.builder.ToStringBuilder;
+import com.github.hgaol.reimu.rtda.heap.ReClass;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Gao Han
@@ -21,7 +24,7 @@ public class MethodUtils {
 
   public static ReClass.Method lookupInterfaceMethod(ReClass iface, String name, String descriptor) {
     for (ReClass.Method method : iface.getMethods()) {
-      if (method.name.equals(name) && method.descriptor.equals(descriptor)) {
+      if (method.getName().equals(name) && method.getDescriptor().equals(descriptor)) {
         return method;
       }
     }
@@ -49,7 +52,7 @@ public class MethodUtils {
     thread.pushFrame(newFrame);
 
     // 2. copy方法的参数（旧frame的操作数栈 -> 新frame的本地变量表
-    int argSlotCount = method.argslotCount;
+    int argSlotCount = method.getArgslotCount();
     if (argSlotCount > 0) {
       for (int i = argSlotCount - 1; i >= 0; i--) {
         Slot slot = invokerFrame.getOperandStack().popSlot();
@@ -57,16 +60,6 @@ public class MethodUtils {
       }
     }
 
-    // todo: hack!
-    if (method.isNative()) {
-      if (method.name.equals("registerNatives")) {
-        thread.popFrame();
-      } else {
-        // native method 先不处理
-        throw new Error(String.format("native method: %s.%s%s\n",
-            ToStringBuilder.reflectionToString(method.clazz), method.name, method.descriptor));
-      }
-    }
   }
 
   /**
@@ -79,9 +72,11 @@ public class MethodUtils {
    */
   public static ReClass.Method lookupMethodInClass(ReClass clazz, String name, String descriptor) {
     for (ReClass c = clazz; c != null; c = c.getSuperClass()) {
-      for (ReClass.Method method : c.getMethods()) {
-        if (method.name.equals(name) && method.descriptor.equals(descriptor)) {
-          return method;
+      ReClass.Method[] methods = c.getMethods();
+      int length = methods == null ? 0 : c.getMethods().length;
+      for (int i = 0; i < length; i++) {
+        if (methods[i].getName().equals(name) && methods[i].getDescriptor().equals(descriptor)) {
+          return methods[i];
         }
       }
     }
@@ -89,10 +84,10 @@ public class MethodUtils {
   }
 
   public static ReClass.Method lookupMethodInInterfaces(ReClass[] interfaces, String name, String descriptor) {
-
-    for (ReClass iface : interfaces) {
+    List<ReClass> ifaces = Arrays.asList(interfaces);
+    for (ReClass iface : ifaces) {
       for (ReClass.Method method : iface.getMethods()) {
-        if (method.name.equals(name) && method.descriptor.equals(descriptor)) {
+        if (method.getName().equals(name) && method.getDescriptor().equals(descriptor)) {
           return method;
         }
       }

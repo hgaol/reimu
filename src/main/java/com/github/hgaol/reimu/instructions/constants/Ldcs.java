@@ -4,10 +4,7 @@ import com.github.hgaol.reimu.instructions.base.Index16Instruction;
 import com.github.hgaol.reimu.instructions.base.Index8Instruction;
 import com.github.hgaol.reimu.rtda.Frame;
 import com.github.hgaol.reimu.rtda.OperandStack;
-import com.github.hgaol.reimu.rtda.heap.ReClass;
-import com.github.hgaol.reimu.rtda.heap.ReObject;
-import com.github.hgaol.reimu.rtda.heap.RtConstantPool;
-import com.github.hgaol.reimu.rtda.heap.StringPool;
+import com.github.hgaol.reimu.rtda.heap.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,8 +71,11 @@ public class Ldcs {
         ReObject internedStr = StringPool.getReString(clazz.getLoader(), (String) c);
         stack.pushRef(internedStr);
         break;
-      // todo
-//      case ClassRef:
+      case "ClassRef":
+        CpInfos.ClassRef classRef = (CpInfos.ClassRef) c;
+        ReObject classObj = classRef.resolvedClass().getjClass();
+        stack.pushRef(classObj);
+        break;
       default:
         throw new Error("todo: ldc");
     }

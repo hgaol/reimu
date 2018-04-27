@@ -64,6 +64,7 @@ public class PutStatic extends Index16Instruction {
         slots.setDouble(slotId, stack.popDouble());
         break;
       case 'L':
+      case '[':
         slots.setRef(slotId, stack.popRef());
         break;
       default:

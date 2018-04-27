@@ -4,6 +4,7 @@ import com.github.hgaol.reimu.classfile.ClassFile;
 import com.github.hgaol.reimu.classfile.ClassFileUtil;
 import com.github.hgaol.reimu.classpath.ClassPath;
 import com.github.hgaol.reimu.rtda.Slots;
+import com.github.hgaol.reimu.util.ClassNameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,6 +28,8 @@ public class ReClassLoader {
   public ReClassLoader(ClassPath classPath) {
     this.classPath = classPath;
     this.classMap = new HashMap<>();
+    loadBasicClasses();
+    loadPrimitiveClassed();
   }
 
   /**
@@ -42,9 +45,53 @@ public class ReClassLoader {
     }
     // 加载数组类
     if (name.charAt(0) == '[') {
-      return loadArrayClass(name);
+      clazz = loadArrayClass(name);
+    } else {
+      clazz = loadNonArrayClass(name);
     }
-    return loadNonArrayClass(name);
+
+    ReClass jlClassClass = this.classMap.get("java/lang/Class");
+    if (jlClassClass != null) {
+      // 用 java/lang/Class 创建一个类对象，此时jClass.class -> java/lang/Class
+      ReObject jClass = jlClassClass.newObject();
+      // jClass.extra -> class; class.jClass -> jClass
+      jClass.setExtra(clazz);
+      clazz.setjClass(jClass);
+    }
+
+    return clazz;
+  }
+
+  private void loadBasicClasses() {
+    ReClass jlClassClass = loadClass("java/lang/Class");
+    for (Map.Entry<String, ReClass> clazzEntry : classMap.entrySet()) {
+      // 如果类对象为空
+      if (clazzEntry.getValue().getjClass() == null) {
+        // 用 java/lang/Class 创建一个类对象，此时class -> java/lang/Class
+        ReObject jClass = jlClassClass.newObject();
+        // jClass.extra -> class; class.jClass -> jClass
+        jClass.setExtra(clazzEntry.getValue());
+        clazzEntry.getValue().setjClass(jClass);
+      }
+    }
+  }
+
+  private void loadPrimitiveClassed() {
+    for (Map.Entry<String, String> entry : ClassNameUtils.primitiveTypes.entrySet()) {
+      loadPrimitiveClass(entry.getKey());
+    }
+  }
+
+  private void loadPrimitiveClass(String className) {
+    ReClass clazz = new ReClass()
+        .setAccessFlags(AccessFlags.ACC_PUBLIC)
+        .setName(className)
+        .setLoader(this)
+        .setInitStarted(true);
+    ReObject jClass = loadClass("java/lang/Class").newObject();
+    jClass.setExtra(clazz);
+    clazz.setjClass(jClass);
+    this.classMap.put(className, clazz);
   }
 
   private ReClass loadArrayClass(String name) {

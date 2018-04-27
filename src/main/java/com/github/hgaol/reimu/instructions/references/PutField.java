@@ -3,8 +3,8 @@ package com.github.hgaol.reimu.instructions.references;
 import com.github.hgaol.reimu.instructions.base.Index16Instruction;
 import com.github.hgaol.reimu.rtda.Frame;
 import com.github.hgaol.reimu.rtda.OperandStack;
-import com.github.hgaol.reimu.rtda.heap.ReClass;
 import com.github.hgaol.reimu.rtda.heap.CpInfos;
+import com.github.hgaol.reimu.rtda.heap.ReClass;
 import com.github.hgaol.reimu.rtda.heap.ReObject;
 import com.github.hgaol.reimu.rtda.heap.RtConstantPool;
 
@@ -19,8 +19,8 @@ public class PutField extends Index16Instruction {
   @Override
   public void execute(Frame frame) {
     ReClass.Method curMethod = frame.getMethod();
-    ReClass curClass = curMethod.getClazz();
-    RtConstantPool cp = curClass.getConstantPool();
+    ReClass curReClass = curMethod.getClazz();
+    RtConstantPool cp = curReClass.getConstantPool();
     CpInfos.FieldRef fieldRef = (CpInfos.FieldRef) cp.getConstant(index);
     ReClass.Field field = fieldRef.resolvedField();
 
@@ -28,7 +28,7 @@ public class PutField extends Index16Instruction {
       throw new Error("java.lang.IncompatibleClassChangeError");
     }
     if (field.isFinal()) {
-      if (curClass != field.getClazz() || !curMethod.getName().equals("<init>")) {
+      if (curReClass != field.getClazz() || !curMethod.getName().equals("<init>")) {
         throw new Error("java.lang.IllegalAccessError");
       }
     }
@@ -78,7 +78,7 @@ public class PutField extends Index16Instruction {
         break;
       case 'L':
       case '[':
-        val = stack.popLong();
+        val = stack.popRef();
         ref = stack.popRef();
         if (ref == null) {
           throw new Error("java.lang.NullPointerException");

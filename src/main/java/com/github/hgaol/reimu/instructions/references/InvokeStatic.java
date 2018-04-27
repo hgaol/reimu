@@ -4,9 +4,9 @@ import com.github.hgaol.reimu.instructions.base.ClassInitLogic;
 import com.github.hgaol.reimu.instructions.base.Index16Instruction;
 import com.github.hgaol.reimu.rtda.Frame;
 import com.github.hgaol.reimu.rtda.heap.CpInfos;
-import com.github.hgaol.reimu.rtda.heap.MethodUtils;
 import com.github.hgaol.reimu.rtda.heap.ReClass;
 import com.github.hgaol.reimu.rtda.heap.RtConstantPool;
+import com.github.hgaol.reimu.util.MethodUtils;
 
 /**
  * Invoke a class (static) method

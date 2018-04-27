@@ -4,6 +4,7 @@ import com.github.hgaol.reimu.instructions.base.BytecodeReader;
 import com.github.hgaol.reimu.instructions.base.Instruction;
 import com.github.hgaol.reimu.rtda.Frame;
 import com.github.hgaol.reimu.rtda.heap.*;
+import com.github.hgaol.reimu.util.MethodUtils;
 
 /**
  * 操作码后面跟着4个字节，前两个字节意思和其他一样

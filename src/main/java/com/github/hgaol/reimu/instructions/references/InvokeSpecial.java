@@ -3,6 +3,7 @@ package com.github.hgaol.reimu.instructions.references;
 import com.github.hgaol.reimu.instructions.base.Index16Instruction;
 import com.github.hgaol.reimu.rtda.Frame;
 import com.github.hgaol.reimu.rtda.heap.*;
+import com.github.hgaol.reimu.util.MethodUtils;
 
 /**
  * 用来调用无需动态绑定的实例方法

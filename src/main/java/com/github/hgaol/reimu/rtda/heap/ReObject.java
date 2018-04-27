@@ -11,6 +11,8 @@ public class ReObject {
   private ReClass clazz;
   // 实例变量
   private Object data;
+  // 如果为类对象，指向对应的ReClass；如果非类对象，空
+  private Object extra;
 
   public ReObject(ReClass clazz, Object data) {
     this.clazz = clazz;
@@ -33,6 +35,15 @@ public class ReObject {
 
   public boolean isInstanceOf(ReClass clazz) {
     return clazz.isAssignableFrom(this.clazz);
+  }
+
+  public Object getExtra() {
+    return extra;
+  }
+
+  public ReObject setExtra(Object extra) {
+    this.extra = extra;
+    return this;
   }
 
   /**
