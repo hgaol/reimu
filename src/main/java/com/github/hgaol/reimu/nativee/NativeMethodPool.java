@@ -1,7 +1,6 @@
 package com.github.hgaol.reimu.nativee;
 
-import com.github.hgaol.reimu.nativee.java.lang.NaClass;
-import com.github.hgaol.reimu.nativee.java.lang.NaObject;
+import com.github.hgaol.reimu.nativee.java.lang.*;
 import com.github.hgaol.reimu.rtda.Frame;
 
 import java.util.HashMap;
@@ -19,6 +18,10 @@ public class NativeMethodPool {
   static {
     NaObject.init();
     NaClass.init();
+    NaFloat.init();
+    NaDouble.init();
+    NaString.init();
+    NaSystem.init();
   }
 
   private static final INativeMethod emptyMethod = (Frame frame) -> { };

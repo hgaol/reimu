@@ -25,7 +25,7 @@ public class NaClass {
 
   // static native Class<?> getPrimitiveClass(String name);
   // (Ljava/lang/String;)Ljava/lang/Class;
-  public static final INativeMethod getPrimitiveClass = (Frame frame) -> {
+  private static INativeMethod getPrimitiveClass = (Frame frame) -> {
     ReObject nameObj = frame.getLocalVars().getRef(0);
     String name = StringPool.getOrigString(nameObj);
 
@@ -36,7 +36,7 @@ public class NaClass {
   };
 
 
-  public static final INativeMethod getName0 = (Frame frame) -> {
+  private static INativeMethod getName0 = (Frame frame) -> {
     ReObject thisObj = frame.getLocalVars().getThis();
     ReClass clazz = (ReClass) thisObj.getExtra();
 
@@ -46,13 +46,11 @@ public class NaClass {
     frame.getOperandStack().pushRef(nameObj);
   };
 
-  public static final INativeMethod desiredAssertionStatus0 = (Frame frame) -> {
+  private static INativeMethod desiredAssertionStatus0 = (Frame frame) -> {
     frame.getOperandStack().pushBoolean(false);
   };
 
-  // public native boolean isInterface();
-  // ()Z
-  public static final INativeMethod isInterface = (Frame frame) -> {
+  private static INativeMethod isInterface = (Frame frame) -> {
     LocalVars vars = frame.getLocalVars();
     ReObject thisObj = vars.getThis();
     ReClass clazz = (ReClass) thisObj.getExtra();
@@ -60,7 +58,7 @@ public class NaClass {
     frame.getOperandStack().pushBoolean(clazz.isInterface());
   };
 
-  public static final INativeMethod isPrimitive = (Frame frame) -> {
+  private static INativeMethod isPrimitive = (Frame frame) -> {
     LocalVars vars = frame.getLocalVars();
     ReObject thisObj = vars.getThis();
     ReClass clazz = (ReClass) thisObj.getExtra();

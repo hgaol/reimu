@@ -85,4 +85,7 @@ public class LocalVars {
     slots[index] = slot;
   }
 
+  public Slot[] getSlots() {
+    return slots;
+  }
 }

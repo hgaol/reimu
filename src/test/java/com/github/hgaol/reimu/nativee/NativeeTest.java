@@ -1,5 +1,7 @@
 package com.github.hgaol.reimu.nativee;
 
+import com.github.hgaol.reimu.util.VMUtils;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -17,13 +19,20 @@ public class NativeeTest {
 
   @Before
   public void before() {
-//    ToStringBuilder.setDefaultStyle(new VMUtils.ReimuToStringStyle());
+    ToStringBuilder.setDefaultStyle(new VMUtils.ReimuToStringStyle());
   }
 
   @Test
-  public void arrayTest() {
+  public void nativeTest() {
     String[] args = new String[]
         {"-cp", "target/test-classes", "com.github.hgaol.reimu.example.GetClassTest"};
+    invokeTest(args);
+  }
+
+  @Test
+  public void stringTest() {
+    String[] args = new String[]
+        {"-cp", "target/test-classes", "com.github.hgaol.reimu.example.StringTest"};
     invokeTest(args);
   }
 

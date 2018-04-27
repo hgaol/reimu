@@ -29,6 +29,10 @@ public class ReObject {
     return (Slots) data;
   }
 
+  public Object getArrayData() {
+    return data;
+  }
+
   public ReClass getClazz() {
     return clazz;
   }

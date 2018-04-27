@@ -97,5 +97,8 @@ public class OperandStack {
     return slots[size - 1 - n].ref;
   }
 
+  public Slot[] getSlots() {
+    return slots;
+  }
 }
 

@@ -16,4 +16,12 @@ public class Slot {
     this.num = other.num;
     this.ref = other.ref;
   }
+
+  @Override
+  public String toString() {
+    return "Slot{" +
+        "num=" + num +
+        ", ref=" + ref +
+        '}';
+  }
 }
