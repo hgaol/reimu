@@ -36,4 +36,19 @@ public class NativeeTest {
     invokeTest(args);
   }
 
+  @Test
+  public void hashCodeTest() {
+    String[] args = new String[]
+        {"-cp", "target/test-classes", "com.github.hgaol.reimu.example.ObjectTest"};
+    invokeTest(args);
+  }
+
+  @Test
+  public void cloneTest() {
+    // todo: inaccuracy
+    String[] args = new String[]
+        {"-cp", "target/test-classes", "com.github.hgaol.reimu.example.CloneTest"};
+    invokeTest(args);
+  }
+
 }

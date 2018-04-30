@@ -1,12 +1,14 @@
 package com.github.hgaol.reimu.rtda.heap;
 
 import com.github.hgaol.reimu.rtda.Slots;
+import com.rits.cloning.Cloner;
 
 /**
  * @author Gao Han
  * @date: 2018年04月10日
  */
 public class ReObject {
+
   // 类类型的指针
   private ReClass clazz;
   // 实例变量
@@ -145,16 +147,13 @@ public class ReObject {
     }
   }
 
-  enum ArrayType {
+  public ReObject reClone() {
+    return new ReObject(this.clazz, cloneData());
+  }
 
-    INT_ARRAY("int[]"),
-    FLOAT_ARRAY("float[]");
-
-    private String type;
-
-    ArrayType(String type) {
-      this.type = type;
-    }
+  public Object cloneData() {
+    Cloner cloner = new Cloner();
+    return cloner.deepClone(this.data);
   }
 
 }
