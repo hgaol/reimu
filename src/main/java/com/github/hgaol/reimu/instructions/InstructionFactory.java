@@ -188,6 +188,8 @@ public class InstructionFactory {
 
   private static Instruction InvokeNative = new InvokeNative();
 
+  private static Instruction AThrow = new AThrow();
+
   public static Instruction newInstruction(byte opcode) {
     int code = Byte.toUnsignedInt(opcode);
 
@@ -574,8 +576,8 @@ public class InstructionFactory {
         return new ANewArray();
       case 0xbe:
         return ArrayLength;
-      // case 0xbf:
-      // 	return athrow
+      case 0xbf:
+        return AThrow;
       case 0xc0:
         return new CheckCast();
       case 0xc1:

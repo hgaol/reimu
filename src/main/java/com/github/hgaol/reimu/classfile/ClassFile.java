@@ -1,5 +1,6 @@
 package com.github.hgaol.reimu.classfile;
 
+import com.github.hgaol.reimu.classfile.attribute.*;
 import com.github.hgaol.reimu.classfile.attribute.AttributeInfo;
 import com.github.hgaol.reimu.classfile.attribute.AttributeInfoUtil;
 import org.slf4j.Logger;
@@ -130,6 +131,15 @@ public class ClassFile {
 
   private AttributeInfo[] readAttributes(BytesReader reader) {
     return AttributeInfoUtil.readAttributes(reader, this.constantPool);
+  }
+
+  public SourceFileAttribute getSourceFileAttribute() {
+    for (AttributeInfo attrInfo : this.attributes) {
+      if (attrInfo instanceof SourceFileAttribute) {
+        return (SourceFileAttribute) attrInfo;
+      }
+    }
+    return null;
   }
 
   @Override

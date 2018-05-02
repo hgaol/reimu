@@ -24,6 +24,7 @@ public class NativeMethodPool {
     NaString.init();
     NaSystem.init();
     NaVM.init();
+    NaThrowable.init();
   }
 
   private static final INativeMethod emptyMethod = (Frame frame) -> { };

@@ -20,6 +20,10 @@ public class SourceFileAttribute implements AttributeInfo{
     this.sourceFileIndex = reader.readUnsignedShort();
   }
 
+  public String getFileName() {
+    return cp.getUtf8(sourceFileIndex);
+  }
+
   @Override
   public String toString() {
     return "SourceFileAttribute{" +

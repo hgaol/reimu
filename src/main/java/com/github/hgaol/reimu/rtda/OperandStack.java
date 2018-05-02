@@ -100,5 +100,13 @@ public class OperandStack {
   public Slot[] getSlots() {
     return slots;
   }
+
+  public void clear() {
+    this.size = 0;
+    for (Slot slot : slots) {
+      slot.ref = null;
+      slot.num = 0;
+    }
+  }
 }
 

@@ -4,6 +4,8 @@ import com.github.hgaol.reimu.classfile.ClassFile;
 import com.github.hgaol.reimu.classfile.MemberInfo;
 import com.github.hgaol.reimu.classfile.attribute.CodeAttribute;
 import com.github.hgaol.reimu.classfile.attribute.ConstantValueAttribute;
+import com.github.hgaol.reimu.classfile.attribute.LineNumberTableAttribute;
+import com.github.hgaol.reimu.classfile.attribute.SourceFileAttribute;
 import com.github.hgaol.reimu.rtda.Slots;
 import com.github.hgaol.reimu.util.ClassNameUtils;
 import com.github.hgaol.reimu.util.MethodUtils;
@@ -39,6 +41,8 @@ public class ReClass {
   // 类对象, ex: String.class "abc".getClass()
   private ReObject jClass;
 
+  private String sourceFile;
+
   public ReClass() {
   }
 
@@ -50,7 +54,20 @@ public class ReClass {
     this.constantPool = new RtConstantPool(this, cf.constantPool);
     this.fields = newFields(this, cf.getFields());
     this.methods = newMethods(this, cf.getMethods());
+    this.sourceFile = fetchSourceFile(cf);
     // loader, superReClass, interfaces等都是在类加载的时候解析的
+  }
+
+  public String fetchSourceFile(ClassFile cf) {
+    SourceFileAttribute sfAttr = cf.getSourceFileAttribute();
+    if (sfAttr != null) {
+      return sfAttr.getFileName();
+    }
+    return "Unknoun";
+  }
+
+  public String getSourceFile() {
+    return sourceFile;
   }
 
   /**
@@ -157,13 +174,25 @@ public class ReClass {
   }
 
   public static class Method extends ClassMember {
-    protected int maxStack;
-    protected int maxLocals;
-    protected byte[] code;
-    protected int argslotCount;
+    int maxStack;
+    int maxLocals;
+    byte[] code;
+    int argslotCount;
+    ExceptionTable exceptionTable;
+    LineNumberTableAttribute lineNumberTable;
 
     public int getArgslotCount() {
       return argslotCount;
+    }
+
+    public int getLineNumber(int pc) {
+      if (this.isNative()) {
+        return -2;
+      }
+      if (this.lineNumberTable == null) {
+        return -1;
+      }
+      return this.lineNumberTable.getLineNumber(pc);
     }
 
     public static class MethodDescriptor {
@@ -175,6 +204,66 @@ public class ReClass {
        */
       public void addparameterType(String t) {
         parameterTypes.add(t);
+      }
+    }
+
+    public static class ExceptionTable {
+      ExceptionHandler[] handlers;
+
+      public ExceptionTable(CodeAttribute.ExceptionTableEntry[] exceptionTableEntries, RtConstantPool cp) {
+        if (exceptionTableEntries == null) {
+          return;
+        }
+        this.handlers = new ExceptionHandler[exceptionTableEntries.length];
+        for (int i = 0; i < exceptionTableEntries.length; i++) {
+          this.handlers[i] = new ExceptionHandler(
+              exceptionTableEntries[i].getStartPc(),
+              exceptionTableEntries[i].getEndPc(),
+              exceptionTableEntries[i].getHandlerPc(),
+              this.getCatchType(exceptionTableEntries[i].getCatchType(), cp));
+        }
+      }
+
+      private CpInfos.ClassRef getCatchType(int index, RtConstantPool cp) {
+        // index = 0 表示捕获所有
+        if (index == 0) {
+          return null;
+        }
+        return (CpInfos.ClassRef) cp.getConstant(index);
+      }
+
+      public ExceptionHandler findExceptionHandler(ReClass exClass, int pc) {
+        if (handlers == null) {
+          return null;
+        }
+        for (ExceptionHandler handler : handlers) {
+          if (handler.startPc <= pc && pc < handler.endPc) {
+            if (handler.catchType == null) {
+              // catch all
+              return handler;
+            }
+            ReClass catchClass = handler.catchType.resolvedClass();
+            if (catchClass == exClass || catchClass.isSuperClassOf(exClass)) {
+              return handler;
+            }
+          }
+        }
+
+        return null;
+      }
+
+      public static class ExceptionHandler {
+        int startPc;
+        int endPc;
+        int handlerPc;
+        CpInfos.ClassRef catchType;
+
+        public ExceptionHandler(int startPc, int endPc, int handlerPc, CpInfos.ClassRef catchType) {
+          this.startPc = startPc;
+          this.endPc = endPc;
+          this.handlerPc = handlerPc;
+          this.catchType = catchType;
+        }
       }
     }
 
@@ -343,6 +432,7 @@ public class ReClass {
 
     /**
      * 如果是本地方法，手动注入code attribute
+     *
      * @param returnType method return type
      */
     private void injectCodeAttribute(String returnType) {
@@ -406,7 +496,17 @@ public class ReClass {
         this.maxLocals = codeAttr.maxLocals;
         this.maxStack = codeAttr.maxStack;
         this.code = codeAttr.code;
+        this.lineNumberTable = codeAttr.getLineNumberTableAttribute();
+        this.exceptionTable = new ExceptionTable(codeAttr.exceptionTables, this.clazz.constantPool);
       }
+    }
+
+    public int findExceptionHandler(ReClass exClass, int pc) {
+      ExceptionTable.ExceptionHandler handler = this.exceptionTable.findExceptionHandler(exClass, pc);
+      if (handler != null) {
+        return handler.handlerPc;
+      }
+      return -1;
     }
 
     public boolean isSynchronized() {

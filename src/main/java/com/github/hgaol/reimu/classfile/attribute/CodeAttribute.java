@@ -32,9 +32,17 @@ public class CodeAttribute implements AttributeInfo {
     this.attributes = AttributeInfoUtil.readAttributes(reader, this.cp);
   }
 
-  // TODO
-  static class ExceptionTableEntry {
+  public LineNumberTableAttribute getLineNumberTableAttribute() {
+    for (AttributeInfo attr : this.attributes) {
+      if (attr instanceof LineNumberTableAttribute) {
+        return (LineNumberTableAttribute) attr;
+      }
+    }
+    return null;
+  }
 
+  // TODO
+  public static class ExceptionTableEntry {
     private int startPc;
     private int endPc;
     private int handlerPc;
@@ -45,6 +53,22 @@ public class CodeAttribute implements AttributeInfo {
       this.endPc = reader.readUnsignedShort();
       this.handlerPc = reader.readUnsignedShort();
       this.catchType = reader.readUnsignedShort();
+    }
+
+    public int getStartPc() {
+      return startPc;
+    }
+
+    public int getEndPc() {
+      return endPc;
+    }
+
+    public int getHandlerPc() {
+      return handlerPc;
+    }
+
+    public int getCatchType() {
+      return catchType;
     }
 
     @Override

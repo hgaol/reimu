@@ -1,5 +1,8 @@
 package com.github.hgaol.reimu.rtda;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Gao Han
  * @date: 2018年04月10日
@@ -45,4 +48,20 @@ public class Stack {
   public boolean isEmpty() {
     return top == null;
   }
+
+  public void clear() {
+    while (!isEmpty()) {
+      pop();
+    }
+  }
+
+  public Frame[] getFrames() {
+    List<Frame> frames = new ArrayList<>();
+    for (Frame frame = top; frame != null; frame = frame.getLower()) {
+      frames.add(frame);
+    }
+    Frame[] ret = new Frame[frames.size()];
+    return frames.toArray(ret);
+  }
+
 }
