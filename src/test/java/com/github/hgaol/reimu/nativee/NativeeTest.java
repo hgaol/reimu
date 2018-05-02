@@ -51,4 +51,11 @@ public class NativeeTest {
     invokeTest(args);
   }
 
+  @Test
+  public void boxTest() {
+    String[] args = new String[]
+        {"-cp", "target/test-classes", "com.github.hgaol.reimu.example.BoxTest"};
+    invokeTest(args);
+  }
+
 }

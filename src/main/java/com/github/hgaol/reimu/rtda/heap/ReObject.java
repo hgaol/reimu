@@ -140,8 +140,8 @@ public class ReObject {
         return ((char[]) this.data).length;
       case "double[]":
         return ((double[]) this.data).length;
-      case "Object[]":
-        return ((Object[]) this.data).length;
+      case "ReObject[]":
+        return ((ReObject[]) this.data).length;
       default:
         throw new Error("Not array!");
     }

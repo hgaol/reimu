@@ -85,16 +85,16 @@ public class ReClass {
   }
 
   public Method getMainMethod() {
-    return this.getStaticMethod("main", "([Ljava/lang/String;)V");
+    return this.getMethod("main", "([Ljava/lang/String;)V", true);
   }
 
   public Method getClinitMethod() {
-    return this.getStaticMethod("<clinit>", "()V");
+    return this.getMethod("<clinit>", "()V", true);
   }
 
-  public Method getStaticMethod(String name, String descriptor) {
+  public Method getMethod(String name, String descriptor, boolean isStatic) {
     for (Method method : methods) {
-      if (method.isStatic() &&
+      if (method.isStatic() == isStatic &&
           method.name.equals(name) &&
           method.descriptor.equals(descriptor)) {
         return method;
@@ -787,5 +787,16 @@ public class ReClass {
     this.jClass = jClass;
     return this;
   }
+
+  public ReObject getRefVar(String fieldName, String fieldDescriptor) {
+    Field field = this.getField(fieldName, fieldDescriptor, true);
+    return this.staticVars.getRef(field.slotId);
+  }
+
+  public void setRefVar(String fieldName, String fieldDescriptor, ReObject ref) {
+    Field field = this.getField(fieldName, fieldDescriptor, true);
+    this.staticVars.setRef(field.slotId, ref);
+  }
+
 }
 

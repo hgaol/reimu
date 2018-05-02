@@ -3,8 +3,8 @@ package com.github.hgaol.reimu.instructions.references;
 import com.github.hgaol.reimu.instructions.base.Index16Instruction;
 import com.github.hgaol.reimu.rtda.Frame;
 import com.github.hgaol.reimu.rtda.OperandStack;
-import com.github.hgaol.reimu.rtda.heap.ReClass;
 import com.github.hgaol.reimu.rtda.heap.CpInfos;
+import com.github.hgaol.reimu.rtda.heap.ReClass;
 import com.github.hgaol.reimu.rtda.heap.ReObject;
 import com.github.hgaol.reimu.rtda.heap.RtConstantPool;
 
@@ -22,7 +22,8 @@ public class InstanceOf extends Index16Instruction {
     OperandStack stack = frame.getOperandStack();
     ReObject ref = stack.popRef();
     if (ref == null) {
-      throw new Error("java.lang.NullPointerException");
+      stack.pushInt(0);
+      return;
     }
 
     RtConstantPool cp = frame.getMethod().getClazz().getConstantPool();
