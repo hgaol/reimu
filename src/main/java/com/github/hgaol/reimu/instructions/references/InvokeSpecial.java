@@ -46,7 +46,7 @@ public class InvokeSpecial extends Index16Instruction {
     }
 
     ReClass.Method methodToBeInvoked = resolvedMethod;
-    // todo: ? 如果调用的是超类中的函数且不是构造函数，需要查找最终的调用方法
+    // 如果调用的是超类中的函数且不是构造函数，需要查找最终的调用方法，且ACC_SUPER标志被设置，需要额外的过程查找最终要调用的方法
     if (curClass.isSuper() &&
         resolvedClass.isSuperClassOf(curClass) &&
         !resolvedClass.getName().equals("<init>")) {

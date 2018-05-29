@@ -2,8 +2,8 @@ package com.github.hgaol.reimu.instructions.references;
 
 import com.github.hgaol.reimu.instructions.base.NoOperandsInstruction;
 import com.github.hgaol.reimu.nativee.java.lang.NaThrowable;
-import com.github.hgaol.reimu.rtda.Frame;
 import com.github.hgaol.reimu.rtda.Thread;
+import com.github.hgaol.reimu.rtda.Frame;
 import com.github.hgaol.reimu.rtda.OperandStack;
 import com.github.hgaol.reimu.rtda.heap.ReObject;
 import com.github.hgaol.reimu.rtda.heap.StringPool;

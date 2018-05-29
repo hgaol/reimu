@@ -15,9 +15,9 @@ import java.util.Arrays;
 /**
  * Poor java virtual machine
  */
-public class ClassParser {
+public class Reimu {
 
-  private static final Logger logger = LoggerFactory.getLogger(ClassParser.class);
+  private static final Logger logger = LoggerFactory.getLogger(Reimu.class);
 
   public static void main(String[] args) {
     CmdInfo cmd = new CmdInfo(args);

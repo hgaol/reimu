@@ -30,12 +30,12 @@ public class NativeMethodPool {
   private static final INativeMethod emptyMethod = (Frame frame) -> { };
 
   public static void register(String className, String methodName, String methodDescriptor, INativeMethod method) {
-    String key = className + "~" + methodDescriptor + "~" + methodDescriptor;
+    String key = className + "~" + methodName + "~" + methodDescriptor;
     registry.put(key, method);
   }
 
   public static INativeMethod findNativeMethod(String className, String methodName, String methodDescriptor) {
-    String key = className + "~" + methodDescriptor + "~" + methodDescriptor;
+    String key = className + "~" + methodName + "~" + methodDescriptor;
     INativeMethod method = registry.get(key);
     if (method != null) {
       return method;

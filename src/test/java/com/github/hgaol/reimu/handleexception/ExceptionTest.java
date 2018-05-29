@@ -25,7 +25,7 @@ public class ExceptionTest {
   @Test
   public void exceptionTest() {
     String[] args = new String[]
-        {"-cp", "target/test-classes", "com.github.hgaol.reimu.example.exceptions.ParseIntTest"};
+        {"-cp", "target/test-classes", "com.github.hgaol.reimu.example.exceptions.JvmsExample"};
     invokeTest(args);
   }
 

@@ -9,6 +9,7 @@ import com.github.hgaol.reimu.rtda.heap.ReObject;
 import com.github.hgaol.reimu.rtda.heap.RtConstantPool;
 
 /**
+ * 两个操作数，一个表示创建哪种类型的数组(从字节码)，另一个表示数组长度(从操作数栈)
  * @author Gao Han
  * @date: 2018年04月26日
  */

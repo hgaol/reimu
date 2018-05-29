@@ -1,7 +1,6 @@
 package com.github.hgaol.reimu.classpath;
 
 import com.github.hgaol.reimu.util.VMUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 
@@ -14,6 +13,18 @@ public class ClassPath {
   private Entry bootClasspath;
   private Entry extClasspath;
   private Entry userClasspath;
+
+  public Entry getBootClasspath() {
+    return bootClasspath;
+  }
+
+  public Entry getExtClasspath() {
+    return extClasspath;
+  }
+
+  public Entry getUserClasspath() {
+    return userClasspath;
+  }
 
   /**
    * @param jreOption boot classpath
@@ -45,7 +56,7 @@ public class ClassPath {
 
     // jre/lib/ext/*
     String jreExtPath = String.join(File.separator, jreDir, "lib", "ext", "*");
-    extClasspath = new WildCardEntry(jreLibPath);
+    extClasspath = new WildCardEntry(jreExtPath);
   }
 
   private void parseUserClasspath(String cpOption) {
@@ -64,22 +75,11 @@ public class ClassPath {
       return "./jre";
     }
     String javaHome = System.getenv("JAVA_HOME");
-    if (StringUtils.isEmpty(javaHome)) {
-      throw new Error("Cannot env JAVA_HOME.");
-    }
     if (!new File(javaHome).exists()) {
       throw new Error("Cannot find jre path");
     }
     return String.join(File.separator, javaHome, "jre");
   }
 
-  @Override
-  public String toString() {
-    return "ClassPath{" +
-        "bootClasspath=" + bootClasspath +
-        ", extClasspath=" + extClasspath +
-        ", userClasspath=" + userClasspath +
-        '}';
-  }
 }
 

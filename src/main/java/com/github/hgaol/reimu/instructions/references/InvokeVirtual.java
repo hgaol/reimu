@@ -9,7 +9,7 @@ import com.github.hgaol.reimu.util.MethodUtils;
 /**
  * 需要动态绑定的方法，针对非接口类型的调用方法
  * Invoke instance method; dispatch based on class
- * todo: ? invoke_virtual和invoke_special的区别，如何体现调用object的方法(字节码中何时如何访问ReObject.fields)
+ * invoke_virtual和invoke_special的区别，如何体现调用object的方法(字节码中何时如何访问ReObject.fields)
  * A: 应该是在新的frame中的操作数中进行操作object相关内容
  *
  * @author Gao Han
@@ -27,9 +27,9 @@ public class InvokeVirtual extends Index16Instruction {
       throw new Error("java.lang.IncompatibleClassChangeError");
     }
 
+    // 从操作数栈弹出this指针
     ReObject ref = frame.getOperandStack().getRefFromTop(resolvedMethod.getArgslotCount() - 1);
     if (ref == null) {
-      // todo: hack
       if (methodRef.getName().equals("println")) {
         _println(frame.getOperandStack(), methodRef.getDescriptor());
         return;
